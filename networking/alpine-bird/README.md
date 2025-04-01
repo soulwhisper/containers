@@ -7,7 +7,7 @@
 ### Example Usage
 
 - cilium feature BFD is behind paid gate, [ref](https://github.com/cilium/cilium/issues/22394);
-- we are using BIRD to provide BFD support;
+- using BIRD to provide BFD support;
 
 ```shell
 # manifest
@@ -15,33 +15,36 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: bfd-bird
+  name: bird
   namespace: kube-system
   labels:
-    k8s-app: bfd-bird
+    k8s-app: bird
+    app.kubernetes.io/name: bird
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: cilium
-      app.kubernetes.io/component: agent
+      k8s-app: bird
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: cilium
-        app.kubernetes.io/component: agent
+        k8s-app: bird
+        app.kubernetes.io/name: bird
     spec:
       containers:
-      - image: "ghcr.io/container/alpine-bird:edge-2.16"
-        name: bfd-bird
+      - name: alpine-bird
+        image: "ghcr.io/container/alpine-bird:edge"
         volumeMounts:
-        - mountPath: /etc/bird.conf
-          name: config
+        - name: config
+          mountPath: /etc/bird.conf
           subPath: bird.conf
+          readOnly: true
+      restartPolicy: Always
       hostNetwork: true
       volumes:
-      - configMap:
+      - name: config
+        configMap:
           name: bird-config
-        name: config
+        
 
 # bird.conf
 ## required to autoconfigure router-id
@@ -49,12 +52,10 @@ protocol device {}
 
 ## bare-bones BFD configuration
 protocol bfd {
-    interface "*" {
+    interface "bond0" {
         interval 300 ms;
         multiplier 3;
     };
-    neighbor 10.10.0.101;
-    neighbor 10.10.0.102;
-    neighbor 10.10.0.103;
+    neighbor 10.10.0.2; # bgp router
 }
 ```

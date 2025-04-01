@@ -1,0 +1,84 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Build alpine-bird images
+
+on:
+  push:
+    paths:
+      - 'networking/alpine-bird/Dockerfile'
+    branches:
+      - main
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build (${{ matrix.channel }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - channel: edge
+          - channel: latest
+
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get version
+        id: get_version
+        run: |
+          alpine_version=$(docker run --rm alpine:${{ matrix.channel }} sh -c "grep VERSION_ID /etc/os-release | awk -F= '{print \$2}' | tr -d '\"'")
+          bird_version=$(docker run --rm alpine:${{ matrix.channel }} sh -c "apk update >/dev/null && apk list bird 2>/dev/null | sed -n 's/^bird-\([^-]*\)-.*/\1/p'") 
+          echo "alpine_version=$alpine_version" >> $GITHUB_OUTPUT
+          echo "bird_version=$bird_version" >> $GITHUB_OUTPUT
+
+      - name: Check GHCR tag
+        uses: mukunku/tag-exists-action@v1.6.0
+        id: check-tag
+        with: 
+          tag: "${{ steps.get_version.outputs.alpine_version }}-bird-${{ steps.get_version.outputs.bird_version }}"
+          repo: "ghcr.io/soulwhisper/containers/alpine-bird"
+
+      - name: Build and push image
+        if: steps.check-tag.outputs.exists == 'false'
+        uses: docker/build-push-action@v5
+        with:
+          context: "{{defaultContext}}:networking/alpine-bird"
+          build-contexts: |
+            alpine=docker-image://alpine:${{ matrix.channel }}
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/soulwhisper/containers/alpine-bird:${{ steps.get_version.outputs.alpine_version }}-bird-${{ steps.get_version.outputs.bird_version }}
+            ghcr.io/soulwhisper/containers/alpine-bird:${{ matrix.channel }}
+
+  post-build:
+    if: ${{ !cancelled() }}
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Check build matrix status
+        if: ${{ needs.build.result != 'success' }}
+        run: exit 1
+      - name: Cleanup images
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          packages: containers/alpine-bird
+          keep-n-tagged: 5
+          delete-orphaned-images: true
+

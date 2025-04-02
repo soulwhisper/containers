@@ -80,5 +80,6 @@ jobs:
         with:
           packages: containers/alpine-bird
           keep-n-tagged: 5
-          delete-orphaned-images: true
+          delete-untagged: true
+          delete-partial-images: true
 

@@ -49,7 +49,7 @@ jobs:
         id: check-tag
         with: 
           tag: "${{ steps.get_version.outputs.alpine_version }}-bird-${{ steps.get_version.outputs.bird_version }}"
-          repo: "ghcr.io/soulwhisper/containers/alpine-bird"
+          repo: "ghcr.io/soulwhisper/alpine-bird"
 
       - name: Build and push image
         if: steps.check-tag.outputs.exists == 'false'
@@ -61,8 +61,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/soulwhisper/containers/alpine-bird:${{ steps.get_version.outputs.alpine_version }}-bird-${{ steps.get_version.outputs.bird_version }}
-            ghcr.io/soulwhisper/containers/alpine-bird:${{ matrix.channel }}
+            ghcr.io/soulwhisper/alpine-bird:${{ steps.get_version.outputs.alpine_version }}-bird-${{ steps.get_version.outputs.bird_version }}
+            ghcr.io/soulwhisper/alpine-bird:${{ matrix.channel }}
 
   post-build:
     if: ${{ !cancelled() }}

@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: alpine-bird
-        image: "ghcr.io/container/alpine-bird:edge"
+        image: "ghcr.io/soulwhisper/alpine-bird:edge"
         volumeMounts:
         - name: config
           mountPath: /etc/bird.conf

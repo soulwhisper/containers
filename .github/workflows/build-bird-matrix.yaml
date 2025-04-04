@@ -45,14 +45,15 @@ jobs:
           echo "bird_version=$bird_version" >> $GITHUB_OUTPUT
 
       - name: Check GHCR tag
-        uses: mukunku/tag-exists-action@v1.6.0
+        uses: tyriis/docker-image-tag-exists@v2.1.0
         id: check-tag
-        with: 
+        with:
+          registry: "ghcr.io"
+          repository: "soulwhisper/alpine-bird"
           tag: "${{ steps.get_version.outputs.alpine_version }}-bird-${{ steps.get_version.outputs.bird_version }}"
-          repo: "ghcr.io/soulwhisper/alpine-bird"
 
       - name: Build and push image
-        if: steps.check-tag.outputs.exists == 'false'
+        if: steps.check-tag.outputs.tag == 'not found'
         uses: docker/build-push-action@v5
         with:
           context: "{{defaultContext}}:networking/alpine-bird"
@@ -78,7 +79,7 @@ jobs:
       - name: Cleanup images
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
-          packages: containers/alpine-bird
+          packages: alpine-bird
           keep-n-tagged: 5
           delete-untagged: true
           delete-partial-images: true

@@ -9,7 +9,7 @@
 - cilium feature BFD is behind paid gate, [ref](https://github.com/cilium/cilium/issues/22394);
 - using BIRD to provide BFD support;
 
-```shell
+```yaml
 # manifest
 ---
 apiVersion: apps/v1
@@ -31,21 +31,22 @@ spec:
         app.kubernetes.io/name: bird
     spec:
       containers:
-      - name: alpine-bird
-        image: "ghcr.io/soulwhisper/alpine-bird:edge"
-        volumeMounts:
-        - name: config
-          mountPath: /etc/bird.conf
-          subPath: bird.conf
-          readOnly: true
+        - name: alpine-bird
+          image: "ghcr.io/soulwhisper/alpine-bird:edge"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/bird.conf
+              subPath: bird.conf
+              readOnly: true
       restartPolicy: Always
       hostNetwork: true
       volumes:
-      - name: config
-        configMap:
-          name: bird-config
-        
+        - name: config
+          configMap:
+            name: bird-config
+```
 
+```conf
 # bird.conf
 ## required to autoconfigure router-id
 protocol device {}

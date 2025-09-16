@@ -1,15 +1,15 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Build alpine-bird images
+name: Build bird-alpine images
 
 on:
   push:
     paths:
-      - 'networking/alpine-bird/Dockerfile'
+      - "apps/bird-alpine/Dockerfile"
     branches:
       - main
   schedule:
-    - cron: '0 2 * * *'
+    - cron: "0 2 * * *"
   workflow_dispatch:
 
 jobs:
@@ -40,7 +40,7 @@ jobs:
         id: get_version
         run: |
           alpine_version=$(docker run --rm alpine:${{ matrix.channel }} sh -c "grep VERSION_ID /etc/os-release | awk -F= '{print \$2}' | tr -d '\"'")
-          bird_version=$(docker run --rm alpine:${{ matrix.channel }} sh -c "apk update >/dev/null && apk list bird 2>/dev/null | sed -n 's/^bird-\([^-]*\)-.*/\1/p'") 
+          bird_version=$(docker run --rm alpine:${{ matrix.channel }} sh -c "apk update >/dev/null && apk list bird 2>/dev/null | sed -n 's/^bird-\([^-]*\)-.*/\1/p'")
           echo "alpine_version=$alpine_version" >> $GITHUB_OUTPUT
           echo "bird_version=$bird_version" >> $GITHUB_OUTPUT
 
@@ -49,21 +49,21 @@ jobs:
         id: check-tag
         with:
           registry: "ghcr.io"
-          repository: "soulwhisper/alpine-bird"
+          repository: "soulwhisper/bird-alpine"
           tag: "${{ steps.get_version.outputs.alpine_version }}-bird-${{ steps.get_version.outputs.bird_version }}"
 
       - name: Build and push image
         if: steps.check-tag.outputs.tag == 'not found'
         uses: docker/build-push-action@v5
         with:
-          context: "{{defaultContext}}:networking/alpine-bird"
+          context: "{{defaultContext}}:apps/bird-alpine"
           build-contexts: |
             alpine=docker-image://alpine:${{ matrix.channel }}
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/soulwhisper/alpine-bird:${{ steps.get_version.outputs.alpine_version }}-bird-${{ steps.get_version.outputs.bird_version }}
-            ghcr.io/soulwhisper/alpine-bird:${{ matrix.channel }}
+            ghcr.io/soulwhisper/bird-alpine:${{ steps.get_version.outputs.alpine_version }}-bird-${{ steps.get_version.outputs.bird_version }}
+            ghcr.io/soulwhisper/bird-alpine:${{ matrix.channel }}
 
   post-build:
     if: ${{ !cancelled() }}
@@ -79,8 +79,15 @@ jobs:
       - name: Cleanup images
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
-          packages: alpine-bird
-          keep-n-tagged: 5
+          packages: bird-alpine
+          keep-n-tagged: 3
           delete-untagged: true
           delete-partial-images: true
 
+  workflow-keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: liskin/gh-workflow-keepalive@v1

@@ -1,0 +1,84 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Build netbox-custom image
+
+on:
+  push:
+    paths:
+      - "apps/netbox-custom/Dockerfile"
+    branches:
+      - main
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Netbox-custom
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get version
+        id: get_version
+        run: |
+          netbox_version=$(docker run --rm netboxcommunity/netbox:latest sh -c "cat /opt/netbox/pyproject.toml | sed -n 's/^version = \"\([^\"]*\)\"/\1/p'")
+          echo "netbox_version=$netbox_version" >> $GITHUB_OUTPUT
+
+      - name: Check GHCR tag
+        uses: tyriis/docker-image-tag-exists@v2.1.0
+        id: check-tag
+        with:
+          registry: "ghcr.io"
+          repository: "soulwhisper/netbox-custom"
+          tag: "${{ steps.get_version.outputs.netbox_version }}"
+
+      - name: Build and push image
+        if: steps.check-tag.outputs.tag == 'not found'
+        uses: docker/build-push-action@v5
+        with:
+          context: "{{defaultContext}}:apps/netbox-custom"
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/soulwhisper/netbox-custom:${{ steps.get_version.outputs.netbox_version }}
+            ghcr.io/soulwhisper/netbox-custom:latest
+
+  post-build:
+    if: ${{ !cancelled() }}
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Check build matrix status
+        if: ${{ needs.build.result != 'success' }}
+        run: exit 1
+      - name: Cleanup images
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          packages: netbox-custom
+          keep-n-tagged: 3
+          delete-untagged: true
+          delete-partial-images: true
+
+  workflow-keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: liskin/gh-workflow-keepalive@v1

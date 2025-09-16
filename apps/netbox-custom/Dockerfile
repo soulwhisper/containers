@@ -1,0 +1,13 @@
+FROM netboxcommunity/netbox:latest
+
+RUN . /opt/netbox/venv/bin/activate && uv pip install \
+  netbox-attachments \
+  netbox-bgp \
+  netbox-floorplan-plugin \
+  netbox-interface-synchronization \
+  netbox-plugin-dns \
+  netbox-plugin-prometheus-sd \
+  netbox-qrcode \
+  netbox-reorder-rack \
+  netbox-topology-views \
+  netbox-napalm-plugin

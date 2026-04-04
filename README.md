@@ -11,3 +11,7 @@
 ### Netbox-custom
 
 - official netbox container with plugins;
+
+### Stork-alpine
+
+- ISC stork on alpine;

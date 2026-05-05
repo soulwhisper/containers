@@ -1,4 +1,4 @@
-module github.com/bjw-s-labs/container-images
+module github.com/soulwhisper/containers
 
 go 1.25.1
 

@@ -9,7 +9,7 @@ import (
 
 func Test(t *testing.T) {
 	ctx := context.Background()
-	image := testhelpers.GetTestImage("ghcr.io/soulwhisper/netbox-custom:latest")
+	image := testhelpers.GetTestImage("ghcr.io/soulwhisper/netbox:latest")
 
 	pip := "/opt/netbox/venv/bin/pip"
 

@@ -9,7 +9,7 @@ import (
 
 func Test(t *testing.T) {
 	ctx := context.Background()
-	image := testhelpers.GetTestImage("ghcr.io/soulwhisper/forgejo-runner:latest")
+	image := testhelpers.GetTestImage("ghcr.io/soulwhisper/forgejo-runner-gitops:latest")
 
 	t.Run("Check cosign exists", func(t *testing.T) {
 		testhelpers.TestFileExists(t, ctx, image, "/usr/local/bin/cosign", nil)

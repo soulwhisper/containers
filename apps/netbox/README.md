@@ -1,4 +1,4 @@
-## Netbox Custom
+## Netbox with plugins
 
 - Tested with [nix-config](https://github.com/soulwhisper/nix-config/blob/main/hosts/_modules/nixos/services/netbox/default.nix);
 

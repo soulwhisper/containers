@@ -10,7 +10,7 @@ Since the official ISC Stork project does not provide a native Docker image, thi
 ---
 services:
   stork-server:
-    image: ghcr.io/soulwhisper/stork-alpine:latest
+    image: ghcr.io/soulwhisper/stork:latest
     container_name: stork-server
     restart: always
     ports:
@@ -31,7 +31,7 @@ services:
 ```yaml
 services:
   stork-agent:
-    image: ghcr.io/soulwhisper/stork-alpine:latest
+    image: ghcr.io/soulwhisper/stork:latest
     container_name: stork-agent
     restart: always
     pid: "host"
@@ -44,9 +44,34 @@ services:
     environment:
       - STORK_MODE=agent
       - STORK_AGENT_PORT=8081
-      - STORK_AGENT_SERVER_URL=http://host.containers.internal:8080 # or, http://stork-server:8080
+      # docker use 'host.docker.internal', or 'http://stork-server:8080'.
+      - STORK_AGENT_SERVER_URL=http://host.containers.internal:8080
     volumes:
       - /etc/bind:/etc/bind
       - /var/lib/kea:/var/lib/kea
       - /var/run/kea:/var/run/kea
+```
+
+- use env file;
+
+```yaml
+services:
+  stork-server:
+    image: ghcr.io/soulwhisper/stork:2.4.0
+    container_name: stork-server
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./stork-server.env:/etc/stork/server.env:ro
+      - /run/postgresql:/run/postgresql
+```
+
+```
+# stork-server.env
+STORK_REST_PORT=8080
+STORK_DATABASE_HOST=/run/postgresql
+STORK_DATABASE_NAME=stork
+STORK_DATABASE_USER_NAME=stork
+STORK_SERVER_ENABLE_METRICS=1
 ```

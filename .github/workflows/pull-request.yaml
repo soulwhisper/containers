@@ -99,7 +99,7 @@ jobs:
         env:
           APP: ${{ matrix.app }}
           TESTCONTAINERS_RYUK_DISABLED: "true"
-          TEST_IMAGE: ${{ matrix.app }}@${{ fromJSON(steps.bake.outputs.metadata)['image-local']['containerimage.digest'] }}
+          TEST_IMAGE: ghcr.io/${{ matrix.app }}@${{ fromJSON(steps.bake.outputs.metadata)['image-local']['containerimage.digest'] }}
         run: |-
           echo "Running tests against ${TEST_IMAGE}"
           go test -v ./apps/${APP}/...

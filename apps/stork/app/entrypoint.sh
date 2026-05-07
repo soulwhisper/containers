@@ -55,11 +55,13 @@ esac
 
 env_file="${STORK_ENV_FILE:-${env_file_default}}"
 if [ -f "${env_file}" ]; then
-    echo "entrypoint: loading env from ${env_file}"
-    set -a
-    # shellcheck disable=SC1090
-    . "${env_file}"
-    set +a
+    echo "entrypoint: loading defaults from ${env_file} (existing env vars preserved)"
+    while IFS='=' read -r key value; do
+        case "$key" in
+            '' | \#*) continue ;;
+        esac
+        eval "test -z \"\${$key+x}\"" && export "$key=$value"
+    done < "${env_file}"
 fi
 
 echo "entrypoint: exec ${binary} (mode=${STORK_MODE})"

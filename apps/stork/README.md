@@ -9,21 +9,34 @@ Since the official ISC Stork project does not provide a native Docker image, thi
 ```yaml
 ---
 services:
+  stork-database:
+    image: docker.io/library/postgres:18-alpine
+    container_name: stork-database
+    restart: unless-stopped
+    volumes:
+      - "./data:/var/lib/postgresql"
+    environment:
+      POSTGRES_DB: stork
+      POSTGRES_USER: stork
+      POSTGRES_PASSWORD: stork
+
   stork-server:
     image: ghcr.io/soulwhisper/stork:latest
     container_name: stork-server
-    restart: always
+    restart: unless-stopped
+    depends_on:
+      - stork-database
     ports:
       - "8080:8080"
     environment:
       - STORK_MODE=server
       - STORK_REST_PORT=8080
-      - STORK_DATABASE_HOST=/run/postgresql
+      - STORK_DATABASE_HOST=stork-database
+      - STORK_DATABASE_PORT=5432
       - STORK_DATABASE_NAME=stork
       - STORK_DATABASE_USER_NAME=stork
+      - STORK_DATABASE_PASSWORD=stork
       - STORK_SERVER_ENABLE_METRICS=1
-    volumes:
-      - /run/postgresql:/run/postgresql # host postgres socket
 ```
 
 - agent mode;
@@ -33,7 +46,7 @@ services:
   stork-agent:
     image: ghcr.io/soulwhisper/stork:latest
     container_name: stork-agent
-    restart: always
+    restart: unless-stopped
     pid: "host"
     cap_add:
       - SYS_PTRACE
@@ -43,9 +56,9 @@ services:
       - "9547:9547/tcp" # kea metrics
     environment:
       - STORK_MODE=agent
+      - STORK_AGENT_HOST=stork-agent # if using host network, set IP here
       - STORK_AGENT_PORT=8081
-      # docker use 'host.docker.internal', or 'http://stork-server:8080'.
-      - STORK_AGENT_SERVER_URL=http://host.containers.internal:8080
+      - STORK_AGENT_SERVER_URL=http://stork-server:8080
     volumes:
       - /etc/bind:/etc/bind
       - /var/lib/kea:/var/lib/kea

@@ -73,10 +73,6 @@ func Test(t *testing.T) {
 
 	// ---- hermes-webui ------------------------------------------------------
 
-	t.Run("Check hermes-webui venv python exists", func(t *testing.T) {
-		testhelpers.TestFileExists(t, ctx, image, "/opt/hermes-webui/venv/bin/python3", nil)
-	})
-
 	t.Run("Check hermes-webui server.py exists", func(t *testing.T) {
 		testhelpers.TestFileExists(t, ctx, image, "/opt/hermes-webui/server.py", nil)
 	})

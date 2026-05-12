@@ -49,15 +49,12 @@ RUN uv venv /opt/supervisor \
 RUN cd /opt \
     && git clone --depth 1 --branch "${WEBUI_VERSION}" \
         https://github.com/nesquena/hermes-webui.git hermes-webui \
-    && uv venv /opt/hermes-webui/venv \
-    && uv pip install --python /opt/hermes-webui/venv/bin/python3 --no-cache-dir \
+    && uv pip install --python /opt/hermes/.venv/bin/python3 --no-cache-dir \
         -r /opt/hermes-webui/requirements.txt \
-    && uv pip install --python /opt/hermes-webui/venv/bin/python3 --no-cache-dir \
-        -e "/opt/hermes[all]" \
     && rm -rf /opt/hermes-webui/.git \
     && echo "__version__ = '${WEBUI_VERSION}'" > /opt/hermes-webui/api/_version.py
 
-ENV PATH="/opt/hermes/.venv/bin:/opt/hermes-webui/venv/bin:$PATH" \
+ENV PATH="/opt/hermes/.venv/bin:$PATH" \
     HERMES_HOME=/opt/data \
     HERMES_DATA_DIR=/opt/data \
     PLAYWRIGHT_BROWSERS_PATH=/opt/hermes/.playwright \

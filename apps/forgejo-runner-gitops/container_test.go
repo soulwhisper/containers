@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/soulwhiser/containers/testhelpers"
+	"github.com/soulwhisper/containers/testhelpers"
 )
 
 func Test(t *testing.T) {

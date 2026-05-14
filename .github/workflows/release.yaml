@@ -96,7 +96,7 @@ jobs:
           GIT_SHA: ${{ github.sha }}
 
       - name: Cleanup untagged
-        uses: actions/delete-package-versions@v5
+        uses: actions/delete-package-versions@e5bc658cc4c965c472efe991f8beea3981499c55 # v5
         id: cleanup
         with:
           package-name: ${{ matrix.app }}

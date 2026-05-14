@@ -95,6 +95,15 @@ jobs:
         env:
           GIT_SHA: ${{ github.sha }}
 
+      - name: Cleanup untagged
+        uses: actions/delete-package-versions@v5
+        id: cleanup
+        with:
+          package-name: ${{ matrix.app }}
+          package-type: container
+          min-versions-to-keep: 10
+          delete-only-untagged-versions: true
+
   status:
     if: ${{ !cancelled() }}
     name: Build Success

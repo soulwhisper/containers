@@ -10,7 +10,8 @@
 
 ARG AGENT_VERSION=v2026.5.7
 
-FROM docker.io/nousresearch/hermes-agent:${AGENT_VERSION}
+# renovate: ignore
+FROM nousresearch/hermes-agent:${AGENT_VERSION}
 
 ARG WEBUI_VERSION
 

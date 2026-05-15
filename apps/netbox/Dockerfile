@@ -2,6 +2,7 @@
 
 ARG VERSION=v4.6.0
 
+# renovate: ignore
 FROM netboxcommunity/netbox:${VERSION}
 
 # Install NetBox plugins into the existing venv via uv (already shipped in the base image)

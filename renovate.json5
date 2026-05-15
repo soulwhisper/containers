@@ -15,6 +15,12 @@
   ],
   packageRules: [
     {
+      description: "Disable pin digests for custom-managed versions in docker-bake.hcl",
+      matchManagers: ["custom.regex"],
+      matchDatasources: ["docker"],
+      pinDigests: false,
+    },
+    {
       description: ["Release Rules for Application Updates"],
       additionalBranchPrefix: "{{parentDir}}-",
       commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",

@@ -26,21 +26,6 @@ variable "WEBUI_VERSION_TRIM" {
 variable "AGENT_VERSION_TRIM" {
   default = trimprefix(AGENT_VERSION, "v")
 }
-# variable "AGENT_VERSION_PARTS" {
-#   default = split(".", AGENT_VERSION_TRIM)
-# }
-# variable "AGENT_VERSION_YEAR" {
-#   default = AGENT_VERSION_PARTS[0]
-# }
-# variable "AGENT_VERSION_MONTH" {
-#   default = format("%02d", AGENT_VERSION_PARTS[1])
-# }
-# variable "AGENT_VERSION_DAY" {
-#   default = format("%02d", AGENT_VERSION_PARTS[2])
-# }
-# variable "IMAGE_VERSION" {
-#   default = "${WEBUI_VERSION_TRIM}-${AGENT_VERSION_YEAR}${AGENT_VERSION_MONTH}${AGENT_VERSION_DAY}"
-# }
 
 target "image" {
   inherits = ["docker-metadata-action"]

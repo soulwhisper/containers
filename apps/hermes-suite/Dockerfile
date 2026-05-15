@@ -8,7 +8,8 @@
 #   9119 — hermes-dashboard (analytics, built into hermes-agent)
 #   8787 — hermes-webui     (browser chat UI)
 
-ARG AGENT_VERSION=latest
+ARG AGENT_VERSION=v2026.5.7
+
 FROM docker.io/nousresearch/hermes-agent:${AGENT_VERSION}
 
 ARG WEBUI_VERSION

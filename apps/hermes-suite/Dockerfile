@@ -10,7 +10,6 @@
 
 ARG AGENT_VERSION=v2026.5.7
 
-# renovate: ignore
 FROM nousresearch/hermes-agent:${AGENT_VERSION}
 
 ARG WEBUI_VERSION

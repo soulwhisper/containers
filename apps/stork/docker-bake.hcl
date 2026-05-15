@@ -4,7 +4,7 @@ SOURCE = "https://gitlab.isc.org/isc-projects/stork"
 variable "GIT_SHA" {}
 
 variable "VERSION" {
-  // renovate: datasource=gitlab-releases depName=gitlab.isc.org/isc-projects/stork
+  // renovate: datasource=github-tags depName=isc-projects/stork
   default = "v2.4.0"
 }
 

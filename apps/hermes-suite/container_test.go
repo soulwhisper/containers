@@ -69,12 +69,6 @@ func Test(t *testing.T) {
 		testhelpers.TestFileExists(t, ctx, image, "/opt/hermes/.venv/bin/hermes", nil)
 	})
 
-	t.Run("Check tinker-atropos installed in agent venv", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"/opt/hermes/.venv/bin/python3", "-c",
-			"import importlib.metadata; importlib.metadata.distribution('tinker-atropos')")
-	})
-
 	// ---- hermes-webui ------------------------------------------------------
 
 	t.Run("Check hermes-webui server.py exists", func(t *testing.T) {

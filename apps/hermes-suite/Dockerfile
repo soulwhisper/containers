@@ -30,14 +30,6 @@ RUN apt-get -qq update \
         gosu \
     && rm -rf /var/lib/apt/lists/*
 
-# Tinker-Atropos reasoning engine and browser tool dependencies.
-# uv is already present in the base image.
-RUN uv pip install -e /opt/hermes/tinker-atropos \
-    && cd /opt/hermes \
-    && npm install --prefer-offline --no-audit \
-    && npx playwright install --with-deps chromium \
-    && rm -rf /opt/hermes/scripts/whatsapp-bridge /var/lib/apt/lists/*
-
 # supervisord is not packaged for Debian Trixie; install it into its own venv.
 RUN uv venv /opt/supervisor \
     && uv pip install --python /opt/supervisor/bin/python3 supervisor \

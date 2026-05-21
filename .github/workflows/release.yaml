@@ -54,6 +54,9 @@ jobs:
       packages: write # required to push to ghcr.io
       attestations: write # optional, for build provenance
       id-token: write # optional, for cosign keyless / OIDC
+    concurrency:
+      group: release-${{ matrix.app }}
+      cancel-in-progress: true
     strategy:
       matrix:
         app: ${{ fromJSON(needs.prepare.outputs.changed-files) }}

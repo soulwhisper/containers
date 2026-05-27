@@ -64,7 +64,8 @@ ENV PATH="/opt/hermes/.venv/bin:$PATH" \
 COPY app /app
 RUN chmod +x /app/entrypoint.sh \
     && mkdir -p /workspace /opt/data \
-    && chown -R hermes:hermes /opt/data /workspace /opt/hermes-webui
+    && chown -R hermes:hermes /opt/data /workspace /opt/hermes-webui \
+    && echo 'export PATH="$HOME/.local/bin:$PATH"' >> $HOME/.bashrc
 
 # Cleanup
 RUN rm -rf /var/cache/* /var/log/apt/* /tmp/* /root/.cache

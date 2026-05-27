@@ -37,6 +37,13 @@
       ignoreTests: false,
     },
     {
+      description: ["Auto-merge .mise.toml updates"],
+      matchFileNames: ["**/.mise.toml"],
+      automerge: true,
+      automergeType: "pr",
+      ignoreTests: false,
+    },
+    {
       description: ["Auto-merge Docker Digest"],
       matchDatasources: ["docker"],
       automerge: true,

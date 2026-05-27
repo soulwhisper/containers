@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
 
 # https://github.com/NousResearch/hermes-agent/blob/main/Dockerfile
-FROM debian:13.4
+FROM debian:13.5@sha256:4ae67669760b807c19f23902a3fd7c121a6a70cf2ae709035674b23e712e4d62
 
 RUN apt update -y && \
     apt install -y --no-install-recommends curl ca-certificates && \

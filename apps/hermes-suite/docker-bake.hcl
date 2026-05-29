@@ -6,7 +6,7 @@ variable "GIT_SHA" {}
 # Upstream hermes-agent base image (date-based tag).
 variable "AGENT_VERSION" {
   // renovate: datasource=docker depName=nousresearch/hermes-agent
-  default = "v2026.5.28"
+  default = "v2026.5.29"
 }
 
 # Upstream hermes-webui release tag (semver).

@@ -3,10 +3,6 @@ APP = "hermes-extras"
 SOURCE = "https://github.com/soulwhisper/containers"
 variable "GIT_SHA" {}
 
-variable "VERSION" {
-  default = "0.1.0"
-}
-
 group "default" {
   targets = ["image-local"]
 }
@@ -20,7 +16,7 @@ target "image" {
     "org.opencontainers.image.revision" = "${GIT_SHA}"
     "org.opencontainers.image.title" = "${APP}"
     "org.opencontainers.image.url" = "${SOURCE}"
-    "org.opencontainers.image.version" = "${VERSION}"
+    "org.opencontainers.image.version" = "${DATE}"
   }
   no-cache = true
 }
@@ -28,7 +24,7 @@ target "image" {
 target "image-local" {
   inherits = ["image"]
   output = ["type=docker"]
-  tags = ["${APP}:${VERSION}"]
+  tags = ["${APP}:${DATE}"]
 }
 
 target "image-all" {
@@ -39,7 +35,7 @@ target "image-all" {
   ]
   tags = [
     "ghcr.io/soulwhisper/${APP}:sha-${GIT_SHA}",
-    "ghcr.io/soulwhisper/${APP}:${VERSION}",
+    "ghcr.io/soulwhisper/${APP}:${DATE}",
     "ghcr.io/soulwhisper/${APP}:latest",
   ]
 }

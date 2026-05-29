@@ -1,5 +1,5 @@
 DATE = formatdate( "YYYY.MM.DD", timestamp() )
-APP = "hermes-plugins"
+APP = "hermes-extras"
 SOURCE = "https://github.com/soulwhisper/containers"
 variable "GIT_SHA" {}
 

@@ -9,22 +9,22 @@ import (
 
 func Test(t *testing.T) {
 	ctx := context.Background()
-	image := testhelpers.GetTestImage("ghcr.io/soulwhisper/hermes-plugins:latest")
+	image := testhelpers.GetTestImage("ghcr.io/soulwhisper/hermes-extras:latest")
 
 	// ---- Layout ------------------------------------------------------------
 
-	t.Run("Check /plugins directory exists", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "test", "-d", "/plugins")
+	t.Run("Check /data directory exists", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "test", "-d", "/data")
 	})
 
-	t.Run("Check /plugins is not empty", func(t *testing.T) {
+	t.Run("Check /data is not empty", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", "[ -n \"$(ls -A /plugins 2>/dev/null)\" ]")
+			"sh", "-c", "[ -n \"$(ls -A /data 2>/dev/null)\" ]")
 	})
 
-	t.Run("Check WORKDIR is /plugins", func(t *testing.T) {
+	t.Run("Check WORKDIR is /data", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", `[ "$(pwd)" = "/plugins" ]`)
+			"sh", "-c", `[ "$(pwd)" = "/data" ]`)
 	})
 
 	// ---- Build-time tooling still present (debugability) ------------------
@@ -48,15 +48,15 @@ func Test(t *testing.T) {
 	// ---- Bundled plugins ---------------------------------------------------
 
 	t.Run("Check rtk binary exists", func(t *testing.T) {
-		testhelpers.TestFileExists(t, ctx, image, "/plugins/rtk", nil)
+		testhelpers.TestFileExists(t, ctx, image, "/data/rtk", nil)
 	})
 
 	t.Run("Check rtk binary is executable", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "test", "-x", "/plugins/rtk")
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "test", "-x", "/data/rtk")
 	})
 
 	t.Run("Check rtk binary runs", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", "/plugins/rtk --version || /plugins/rtk version || /plugins/rtk -v")
+			"sh", "-c", "/data/rtk --version || /data/rtk version || /data/rtk -v")
 	})
 }

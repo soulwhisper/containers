@@ -68,5 +68,14 @@
       matchPackageNames: ["/python/"],
       allowedVersions: "/3\\.14-alpine3\\.23/",
     },
+    {
+     description: "Batch high-cadence hermes-webui into one scheduled rollup",
+     matchManagers: ["custom.regex"],
+     matchDepNames: ["nesquena/hermes-webui"],
+     groupName: "hermes-webui",
+     schedule: ["before 6am"],
+     automerge: true,
+     platformAutomerge: true,
+    },
   ],
 }

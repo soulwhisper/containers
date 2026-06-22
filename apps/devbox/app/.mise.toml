@@ -1,0 +1,13 @@
+[settings]
+disable_hints = ["*"]
+experimental = true
+idiomatic_version_file_enable_tools = ["node", "python", "go", "rust"]
+
+[tools]
+node = "22"
+"npm:@anthropic-ai/claude-code" = "latest"
+gh = "latest"
+just = "latest"
+prek = "latest"
+jq = "latest"
+yq = "latest"

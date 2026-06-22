@@ -42,5 +42,6 @@ spec:
 ```
 
 ```sh
-kubectl exec -it deploy/devbox -- bash
+kubectl exec -it deploy/devbox -- tmux new -As main
+kubectl exec -it deploy/devbox -- tmux attach main
 ```

@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM debian:13
+FROM debian:13-slim
 
 ARG UID=2000
 ARG GID=2000

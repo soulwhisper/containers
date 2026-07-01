@@ -48,7 +48,7 @@ jobs:
           rsync -a --ignore-existing --progress ./include/ ./apps/${{ matrix.app }}/
 
       - name: Build multi-platform image
-        uses: docker/bake-action@6614cfa25eff9a0b2b2697efb0b6159e7680d584 # v7
+        uses: docker/bake-action@d3418bd7d0e9324001bca92fa8ba175ea7e6dc9b # v7
         with:
           load: false
           push: false
@@ -59,7 +59,7 @@ jobs:
           GIT_SHA: ${{ github.sha }}
 
       - name: Build image for testing
-        uses: docker/bake-action@6614cfa25eff9a0b2b2697efb0b6159e7680d584 # v7
+        uses: docker/bake-action@d3418bd7d0e9324001bca92fa8ba175ea7e6dc9b # v7
         id: bake
         with:
           load: true

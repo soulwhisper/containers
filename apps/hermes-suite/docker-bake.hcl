@@ -12,7 +12,7 @@ variable "AGENT_VERSION" {
 # Upstream hermes-webui release tag (semver).
 variable "WEBUI_VERSION" {
   // renovate: datasource=github-releases depName=nesquena/hermes-webui
-  default = "v0.51.774"
+  default = "v0.51.804"
 }
 
 group "default" {

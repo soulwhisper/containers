@@ -40,7 +40,7 @@ func Test(t *testing.T) {
 
 	// ---- Tooling on PATH (mise shims) -------------------------------------
 
-	for _, bin := range []string{"mise", "git", "claude", "gh", "just", "jq", "prek", "tmux", "uv", "yq"} {
+	for _, bin := range []string{"claude", "gh", "git", "just", "jq", "mise", "omp", "prek", "rtk", "tmux", "uv", "yq"} {
 		bin := bin
 		t.Run("which "+bin, func(t *testing.T) {
 			testhelpers.TestCommandSucceeds(t, ctx, image, nil, "which", bin)

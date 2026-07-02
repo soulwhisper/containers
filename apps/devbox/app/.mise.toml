@@ -4,6 +4,8 @@ experimental = true
 idiomatic_version_file_enable_tools = ["node", "python", "go", "rust"]
 
 [tools]
+"github:can1357/oh-my-pi" = "latest"
+"github:rtk-ai/rtk" = "latest"
 claude-code = "latest"
 gh = "latest"
 just = "latest"

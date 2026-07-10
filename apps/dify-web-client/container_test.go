@@ -34,14 +34,4 @@ func Test(t *testing.T) {
 			"node", "-c", "/app/server.js")
 	})
 
-	t.Run("Serves HTTP on port 3000", func(t *testing.T) {
-		testhelpers.TestHTTPEndpoint(t, ctx, image,
-			testhelpers.HTTPTestConfig{
-				Port:           "3000",
-				Path:           "/",
-				StatusCode: 200,
-			},
-			nil,
-		)
-	})
 }

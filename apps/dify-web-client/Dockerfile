@@ -5,6 +5,7 @@
 ARG VERSION=33085b6608fe7174e0fb75e46c220348863b1c19
 
 FROM node:22-alpine AS builder
+ARG VERSION
 WORKDIR /app
 
 # Fetch source tarball at the pinned commit (no git clone — lighter).

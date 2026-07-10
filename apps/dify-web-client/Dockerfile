@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
-
 # Build stage — fetch source, install deps, compile Next.js standalone output.
 # VERSION is a git commit SHA (no tags/releases; renovate tracks git-refs).
 ARG VERSION=33085b6608fe7174e0fb75e46c220348863b1c19
@@ -14,17 +12,23 @@ RUN tar xzf /tmp/repo.tar.gz -C /tmp && \
     cp -r /tmp/webapp-conversation-*/. /app/ && \
     rm -rf /tmp/repo.tar.gz /tmp/webapp-conversation-*
 
+# ── Locale patches: Chinese (zh-Hans) as default ──
+RUN sed -i "s/defaultLocale: 'en'/defaultLocale: 'zh-Hans'/" i18n/index.ts
+RUN sed -i "s/default_language: 'en'/default_language: 'zh-Hans'/" config/index.ts
+RUN sed -i "s/lng: 'en'/lng: 'zh-Hans'/" i18n/i18next-config.ts
+RUN sed -i "s/fallbackLng: 'en'/fallbackLng: 'zh-Hans'/" i18n/i18next-config.ts
+RUN sed -i "s/fallbackLng: 'en'/fallbackLng: 'zh-Hans'/" i18n/i18next-serverside-config.ts
+
 # Install deps and build. output: 'standalone' produces .next/standalone/server.js.
 RUN yarn install --frozen-lockfile
 RUN yarn build
 
-# Runner stage — minimal production image with non-root user.
+# ── Runner stage ──
 FROM node:22-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Non-root user matching Next.js conventions (1001:1001).
 RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001 -G nodejs
 
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public

@@ -2,8 +2,8 @@
 
 FROM langgenius/dify-sandbox:main@sha256:cb076f71cc84c14d4e4f7753ff95c4ba70a3b5816962b4f93bcf42f23a6e5cb8
 
-ARG UID=2001
-ARG GID=2001
+ARG UID=5000
+ARG GID=5000
 
 # ---- mise (apt channel) --------------------------------------------------
 RUN apt update -y && \
@@ -14,8 +14,8 @@ RUN apt update -y && \
     rm -rf /var/lib/apt/lists/*
 
 # ---- non-root sandbox user for exec sessions -----------------------------
-RUN groupadd -g "${GID}" sandbox && \
-    useradd -m -u "${UID}" -g "${GID}" -s /bin/bash sandbox
+RUN groupadd -f -g "${GID}" sandbox && \
+    useradd -m -u "${UID}" -g sandbox -s /bin/bash sandbox
 
 # ---- system-wide mise: tools available to root and sandbox ----------------
 ENV MISE_DATA_DIR=/usr/local/mise \

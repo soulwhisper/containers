@@ -65,6 +65,6 @@ func Test(t *testing.T) {
 	})
 
 	t.Run("officecli runs", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "officecli", "--version")
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "officecli", "--help")
 	})
 }

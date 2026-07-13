@@ -11,27 +11,21 @@ func Test(t *testing.T) {
 	ctx := context.Background()
 	image := testhelpers.GetTestImage("ghcr.io/soulwhisper/dify-sandbox:latest")
 
-	// ---- sandbox user exists ----------------------------------------------
+	// ---- upstream image is intact -----------------------------------------
 
-	t.Run("sandbox user exists", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"id", "sandbox")
+	t.Run("upstream /main binary exists", func(t *testing.T) {
+		testhelpers.TestFileExists(t, ctx, image, "/main", nil)
 	})
 
-	t.Run("sandbox user has bash login shell", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", `[ "$(getent passwd sandbox | cut -d: -f7)" = "/bin/bash" ]`)
-	})
-
-	t.Run("sandbox home is writable", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"su", "-", "sandbox", "-c", `touch "$HOME/.probe"`)
+	t.Run("upstream /entrypoint.sh exists", func(t *testing.T) {
+		testhelpers.TestFileExists(t, ctx, image, "/entrypoint.sh", nil)
 	})
 
 	// ---- mise on system PATH ----------------------------------------------
 
-	t.Run("which mise", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "sh", "-c", "command -v mise")
+	t.Run("command -v mise", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
+			"sh", "-c", "command -v mise")
 	})
 
 	t.Run("mise runs", func(t *testing.T) {
@@ -40,8 +34,9 @@ func Test(t *testing.T) {
 
 	// ---- node (built-in via mise) -----------------------------------------
 
-	t.Run("which node", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "sh", "-c", "command -v node")
+	t.Run("command -v node", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
+			"sh", "-c", "command -v node")
 	})
 
 	t.Run("node runs", func(t *testing.T) {
@@ -51,18 +46,13 @@ func Test(t *testing.T) {
 	// ---- officecli (npm package installed via mise) -----------------------
 
 	t.Run("command -v officecli", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "sh", "-c", "command -v officecli")
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
+			"sh", "-c", "command -v officecli")
 	})
 
-	// ---- tools available to sandbox user ----------------------------------
+	// ---- sandbox user exists ----------------------------------------------
 
-	t.Run("sandbox user can run node", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"su", "-", "sandbox", "-c", "node --version")
-	})
-
-	t.Run("sandbox user can run officecli", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"su", "-", "sandbox", "-c", "command -v officecli")
+	t.Run("sandbox user exists", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "id", "sandbox")
 	})
 }

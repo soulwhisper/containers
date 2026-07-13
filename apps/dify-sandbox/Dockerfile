@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
+ARG SANDBOX_VERSION=main@sha256:cb076f71cc84c14d4e4f7753ff95c4ba70a3b5816962b4f93bcf42f23a6e5cb8
 
-FROM langgenius/dify-sandbox:main@sha256:cb076f71cc84c14d4e4f7753ff95c4ba70a3b5816962b4f93bcf42f23a6e5cb8
+FROM langgenius/dify-sandbox:${SANDBOX_VERSION}
 
 ARG UID=5000
 ARG GID=5000

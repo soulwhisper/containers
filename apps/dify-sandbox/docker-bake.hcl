@@ -1,7 +1,13 @@
 DATE = formatdate( "YYYY.MM.DD", timestamp() )
 APP = "dify-sandbox"
-SOURCE = "https://github.com/soulwhisper/containers"
+SOURCE = "https://github.com/langgenius/dify-sandbox"
 variable "GIT_SHA" {}
+
+# Upstream dify-sandbox base image (main tag, renovate pins digest).
+variable "SANDBOX_VERSION" {
+  // renovate: datasource=docker depName=langgenius/dify-sandbox
+  default = "main@sha256:cb076f71cc84c14d4e4f7753ff95c4ba70a3b5816962b4f93bcf42f23a6e5cb8"
+}
 
 group "default" {
   targets = ["image-local"]
@@ -9,6 +15,9 @@ group "default" {
 
 target "image" {
   inherits = ["docker-metadata-action"]
+  args = {
+    SANDBOX_VERSION = "${SANDBOX_VERSION}"
+  }
   labels = {
     "org.opencontainers.image.vendor" = "soulwhisper"
     "org.opencontainers.image.source" = "https://github.com/soulwhisper/containers"

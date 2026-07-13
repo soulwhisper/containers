@@ -15,7 +15,7 @@ RUN apt update -y && \
 
 # ---- non-root sandbox user for exec sessions -----------------------------
 RUN groupadd -f -g "${GID}" sandbox && \
-    useradd -m -u "${UID}" -g sandbox -s /bin/bash sandbox
+    (id sandbox >/dev/null 2>&1 || useradd -m -u "${UID}" -g sandbox -s /bin/bash sandbox)
 
 # ---- system-wide mise: tools available to root and sandbox ----------------
 ENV MISE_DATA_DIR=/usr/local/mise \

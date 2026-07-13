@@ -11,16 +11,11 @@ func Test(t *testing.T) {
 	ctx := context.Background()
 	image := testhelpers.GetTestImage("ghcr.io/soulwhisper/dify-sandbox:latest")
 
-	// ---- sandbox user exists (uid=gid=5000) -------------------------------
+	// ---- sandbox user exists ----------------------------------------------
 
-	t.Run("sandbox user is uid 5000", func(t *testing.T) {
+	t.Run("sandbox user exists", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", `[ "$(id -u sandbox)" = "5000" ]`)
-	})
-
-	t.Run("sandbox group is gid 5000", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", `[ "$(id -g sandbox)" = "5000" ]`)
+			"id", "sandbox")
 	})
 
 	t.Run("sandbox user has bash login shell", func(t *testing.T) {

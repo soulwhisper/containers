@@ -12,7 +12,7 @@ Based on `langgenius/dify-sandbox:main` — the upstream sandbox server (`/main`
 | node | mise built-in backend (takes precedence over upstream's extracted node) |
 | officecli | `npm:@officecli/officecli` via mise npm backend |
 
-A non-root `sandbox` user (uid=gid=2000) is available for interactive exec sessions.
+A non-root `sandbox` user (uid=gid=2001) is available for interactive exec sessions.
 
 ### Example usage
 

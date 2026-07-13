@@ -2,8 +2,8 @@
 
 FROM langgenius/dify-sandbox:main@sha256:cb076f71cc84c14d4e4f7753ff95c4ba70a3b5816962b4f93bcf42f23a6e5cb8
 
-ARG UID=2000
-ARG GID=2000
+ARG UID=2001
+ARG GID=2001
 
 # ---- mise (apt channel) --------------------------------------------------
 RUN apt update -y && \

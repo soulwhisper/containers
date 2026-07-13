@@ -31,7 +31,7 @@ func Test(t *testing.T) {
 	// ---- mise on system PATH ----------------------------------------------
 
 	t.Run("which mise", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "which", "mise")
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "sh", "-c", "command -v mise")
 	})
 
 	t.Run("mise runs", func(t *testing.T) {
@@ -41,7 +41,7 @@ func Test(t *testing.T) {
 	// ---- node (built-in via mise) -----------------------------------------
 
 	t.Run("which node", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "which", "node")
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "sh", "-c", "command -v node")
 	})
 
 	t.Run("node runs", func(t *testing.T) {
@@ -50,8 +50,8 @@ func Test(t *testing.T) {
 
 	// ---- officecli (npm package installed via mise) -----------------------
 
-	t.Run("which officecli", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "which", "officecli")
+	t.Run("command -v officecli", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "sh", "-c", "command -v officecli")
 	})
 
 	// ---- tools available to sandbox user ----------------------------------
@@ -63,6 +63,6 @@ func Test(t *testing.T) {
 
 	t.Run("sandbox user can run officecli", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"su", "-", "sandbox", "-c", "which officecli")
+			"su", "-", "sandbox", "-c", "command -v officecli")
 	})
 }

@@ -3,10 +3,10 @@ APP = "dify-sandbox"
 SOURCE = "https://github.com/langgenius/dify-sandbox"
 variable "GIT_SHA" {}
 
-# Upstream dify-sandbox base image (main tag, renovate pins digest).
+# Upstream dify-sandbox base image (semver tag).
 variable "SANDBOX_VERSION" {
-  // renovate: datasource=docker depName=langgenius/dify-sandbox
-  default = "main@sha256:cb076f71cc84c14d4e4f7753ff95c4ba70a3b5816962b4f93bcf42f23a6e5cb8"
+  // renovate: datasource=docker depName=langgenius/dify-sandbox versioning=semver
+  default = "0.2.15"
 }
 
 group "default" {
@@ -25,7 +25,7 @@ target "image" {
     "org.opencontainers.image.revision" = "${GIT_SHA}"
     "org.opencontainers.image.title" = "${APP}"
     "org.opencontainers.image.url" = "${SOURCE}"
-    "org.opencontainers.image.version" = "${DATE}"
+    "org.opencontainers.image.version" = "${SANDBOX_VERSION}"
   }
   no-cache = true
 }
@@ -33,7 +33,7 @@ target "image" {
 target "image-local" {
   inherits = ["image"]
   output = ["type=docker"]
-  tags = ["${APP}:${DATE}"]
+  tags = ["${APP}:${SANDBOX_VERSION}"]
 }
 
 target "image-all" {
@@ -44,7 +44,7 @@ target "image-all" {
   ]
   tags = [
     "ghcr.io/soulwhisper/${APP}:sha-${GIT_SHA}",
-    "ghcr.io/soulwhisper/${APP}:${DATE}",
+    "ghcr.io/soulwhisper/${APP}:${SANDBOX_VERSION}",
     "ghcr.io/soulwhisper/${APP}:latest",
   ]
 }

@@ -1,0 +1,7 @@
+[settings]
+disable_hints = ["*"]
+experimental = true
+
+[tools]
+node = "20"
+"npm:@officecli/officecli" = "latest"

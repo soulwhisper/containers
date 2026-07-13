@@ -1,30 +1,30 @@
 ## dify-sandbox
 
-A sandbox container for [Dify](https://dify.ai/) workflow execution with **node** and **officecli** pre-installed via [mise](https://mise.jdx.dev/). Tools are declared in [`app/.mise.toml`](./app/.mise.toml) and fetched at build time.
+Extended [Dify sandbox](https://github.com/langgenius/dify-sandbox) image with **mise**, **node**, and **officecli** pre-installed.
 
-Default user is **uid=gid=2000** with `/bin/bash` as login shell. Idles on `sleep infinity` so you can `kubectl exec -it -- bash`; pass argv to run a command directly instead.
+Based on `langgenius/dify-sandbox:main` — the upstream sandbox server (`/main`) runs by default.
 
-### Tools
+### Additions over upstream
 
-| Tool | Source | Manager |
-|------|--------|---------|
-| node | mise built-in | mise |
-| officecli | npm `@officecli/officecli` | mise (npm backend) |
+| Layer | Detail |
+|-------|--------|
+| mise | Installed via apt; shims on system PATH (`/usr/local/mise/shims`) |
+| node | mise built-in backend (takes precedence over upstream's extracted node) |
+| officecli | `npm:@officecli/officecli` via mise npm backend |
+
+A non-root `sandbox` user (uid=gid=2000) is available for interactive exec sessions.
 
 ### Example usage
 
 ```yaml
 spec:
-  securityContext:
-    runAsUser: 2000
-    runAsGroup: 2000
-    fsGroup: 2000
   containers:
     - name: sandbox
       image: ghcr.io/soulwhisper/dify-sandbox:latest
 ```
 
 ```sh
-kubectl exec -it deploy/dify-sandbox -- bash
-kubectl exec -it deploy/dify-sandbox -- officecli --version
+# exec as sandbox user to use officecli
+kubectl exec -it deploy/dify-sandbox -- su - sandbox
+kubectl exec -it deploy/dify-sandbox -- su - sandbox -c 'officecli --help'
 ```

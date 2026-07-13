@@ -11,34 +11,24 @@ func Test(t *testing.T) {
 	ctx := context.Background()
 	image := testhelpers.GetTestImage("ghcr.io/soulwhisper/dify-sandbox:latest")
 
-	// ---- Non-root default (uid=gid=2000) ----------------------------------
+	// ---- sandbox user exists (uid=gid=2000) -------------------------------
 
-	t.Run("Default user is uid 2000", func(t *testing.T) {
+	t.Run("sandbox user is uid 2000", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", `[ "$(id -u)" = "2000" ]`)
+			"sh", "-c", `[ "$(id -u sandbox)" = "2000" ]`)
 	})
 
-	t.Run("Default group is gid 2000", func(t *testing.T) {
+	t.Run("sandbox user has bash login shell", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", `[ "$(id -g)" = "2000" ]`)
+			"sh", "-c", `[ "$(getent passwd sandbox | cut -d: -f7)" = "/bin/bash" ]`)
 	})
 
-	t.Run("Default user is not root", func(t *testing.T) {
+	t.Run("sandbox home is writable", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", `[ "$(id -u)" != "0" ]`)
+			"su", "-", "sandbox", "-c", `touch "$HOME/.probe"`)
 	})
 
-	t.Run("Login shell is bash", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", `[ "$(getent passwd "$(id -u)" | cut -d: -f7)" = "/bin/bash" ]`)
-	})
-
-	t.Run("HOME is the sandbox home and writable", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", `[ "$HOME" = "/home/sandbox" ] && touch "$HOME/.probe"`)
-	})
-
-	// ---- mise on PATH ----------------------------------------------------
+	// ---- mise on system PATH ----------------------------------------------
 
 	t.Run("which mise", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "which", "mise")
@@ -48,7 +38,7 @@ func Test(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "mise", "--version")
 	})
 
-	// ---- node (built-in via mise) ----------------------------------------
+	// ---- node (built-in via mise) -----------------------------------------
 
 	t.Run("which node", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "which", "node")
@@ -58,10 +48,21 @@ func Test(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "node", "--version")
 	})
 
-	// ---- officecli (npm package installed via mise) ----------------------
+	// ---- officecli (npm package installed via mise) -----------------------
 
 	t.Run("which officecli", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "which", "officecli")
 	})
 
+	// ---- tools available to sandbox user ----------------------------------
+
+	t.Run("sandbox user can run node", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
+			"su", "-", "sandbox", "-c", "node --version")
+	})
+
+	t.Run("sandbox user can run officecli", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
+			"su", "-", "sandbox", "-c", "which officecli")
+	})
 }

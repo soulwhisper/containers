@@ -3,5 +3,5 @@ disable_hints = ["*"]
 experimental = true
 
 [tools]
-node = "latest"
+node = "20"
 "npm:@officecli/officecli" = "latest"

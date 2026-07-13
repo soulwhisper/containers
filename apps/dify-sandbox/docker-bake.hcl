@@ -4,7 +4,7 @@ SOURCE = "https://github.com/langgenius/dify-sandbox"
 variable "GIT_SHA" {}
 
 # Upstream dify-sandbox base image (semver tag).
-variable "SANDBOX_VERSION" {
+variable "VERSION" {
   // renovate: datasource=docker depName=langgenius/dify-sandbox versioning=semver
   default = "0.2.15"
 }
@@ -16,7 +16,7 @@ group "default" {
 target "image" {
   inherits = ["docker-metadata-action"]
   args = {
-    SANDBOX_VERSION = "${SANDBOX_VERSION}"
+    VERSION = "${VERSION}"
   }
   labels = {
     "org.opencontainers.image.vendor" = "soulwhisper"
@@ -25,7 +25,7 @@ target "image" {
     "org.opencontainers.image.revision" = "${GIT_SHA}"
     "org.opencontainers.image.title" = "${APP}"
     "org.opencontainers.image.url" = "${SOURCE}"
-    "org.opencontainers.image.version" = "${SANDBOX_VERSION}"
+    "org.opencontainers.image.version" = "${VERSION}"
   }
   no-cache = true
 }
@@ -33,7 +33,7 @@ target "image" {
 target "image-local" {
   inherits = ["image"]
   output = ["type=docker"]
-  tags = ["${APP}:${SANDBOX_VERSION}"]
+  tags = ["${APP}:${VERSION}"]
 }
 
 target "image-all" {
@@ -44,7 +44,7 @@ target "image-all" {
   ]
   tags = [
     "ghcr.io/soulwhisper/${APP}:sha-${GIT_SHA}",
-    "ghcr.io/soulwhisper/${APP}:${SANDBOX_VERSION}",
+    "ghcr.io/soulwhisper/${APP}:${VERSION}",
     "ghcr.io/soulwhisper/${APP}:latest",
   ]
 }

@@ -75,7 +75,7 @@ jobs:
         uses: fluxcd/flux-mirror/actions/setup@main
 
       - name: Sync Helm Chart to OCI
-        run: flux mirror sync charts/${{ matrix.chart }}/flux-mirror.yaml --no-progress
+        run: flux-mirror sync charts/${{ matrix.chart }}/flux-mirror.yaml --no-progress
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

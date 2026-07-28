@@ -1,0 +1,9 @@
+---
+apiVersion: mirror.plugin.fluxcd.io/v1beta1
+kind: Config
+charts:
+  - name: frr-k8s
+    source: https://metallb.github.io/frr-k8s
+    destination: oci://ghcr.io/soulwhisper/charts
+    version: "*"
+    limit: 3

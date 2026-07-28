@@ -1,0 +1,95 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Charts
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - charts/**
+  workflow_dispatch:
+    inputs:
+      chart:
+        type: string
+        description: Chart Name
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
+    outputs:
+      changed-files: ${{ steps.changed-files.outputs.changed_files }}
+    steps:
+      - name: Get changed files (push)
+        uses: bjw-s-labs/action-changed-files@a9a36fb08ce06db9b02fbd8026cc2c0945eb9841 # v0.6.0
+        id: changed-files-action
+        if: ${{ github.event_name == 'push' }}
+        with:
+          path: charts
+          include_only_directories: true
+          max_depth: 1
+
+      - name: Set changed files output
+        id: changed-files
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo 'changed_files=["${{ inputs.chart }}"]' >> $GITHUB_OUTPUT
+          else
+            echo 'changed_files=${{ steps.changed-files-action.outputs.changed_files }}' >> $GITHUB_OUTPUT
+          fi
+
+  sync:
+    if: ${{ needs.prepare.outputs.changed-files != '[]' }}
+    name: Sync ${{ matrix.chart }}
+    needs:
+      - prepare
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    concurrency:
+      group: charts-${{ matrix.chart }}
+      cancel-in-progress: true
+    strategy:
+      matrix:
+        chart: ${{ fromJSON(needs.prepare.outputs.changed-files) }}
+      fail-fast: false
+      max-parallel: 2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Flux Mirror CLI
+        uses: fluxcd/flux-mirror/actions/setup@main
+
+      - name: Sync Helm Chart to OCI
+        run: flux mirror sync charts/${{ matrix.chart }}/flux-mirror.yaml --no-progress
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  status:
+    if: ${{ !cancelled() }}
+    name: Sync Success
+    needs:
+      - sync
+    runs-on: ubuntu-latest
+    steps:
+      - name: Any jobs failed?
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1
+
+      - name: All jobs passed or skipped?
+        if: ${{ !(contains(needs.*.result, 'failure')) }}
+        run: echo "All jobs passed or skipped" && echo "${{ toJSON(needs.*.result) }}"

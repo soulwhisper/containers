@@ -72,7 +72,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Flux Mirror CLI
-        uses: fluxcd/flux-mirror/actions/setup@main
+        uses: fluxcd/flux-mirror/actions/setup@b2dc3f0afed24bd1150f754ebf168c117a97a678 # main
 
       - name: Sync Helm Chart to OCI
         run: flux-mirror sync charts/${{ matrix.chart }}/flux-mirror.yaml --no-progress

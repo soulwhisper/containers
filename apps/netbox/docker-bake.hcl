@@ -5,7 +5,7 @@ variable "GIT_SHA" {}
 
 variable "VERSION" {
   // renovate: datasource=docker depName=netboxcommunity/netbox
-  default = "v4.6.6"
+  default = "v4.6.7"
 }
 
 group "default" {

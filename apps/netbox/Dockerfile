@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
 
-ARG VERSION=v4.6.7@sha256:575bdf20e89e0ee0cc40daac55ff9835c7c74686bccd8a5db36ec4ba8db0f440
+ARG VERSION=v4.6.7@sha256:1f1f98f1e649f66ff01e2d2751da5a6d4da73a2d47d89ff74d2087e98f823a6d
 
 FROM netboxcommunity/netbox:${VERSION}
 

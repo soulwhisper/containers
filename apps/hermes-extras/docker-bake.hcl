@@ -1,7 +1,13 @@
-DATE = formatdate( "YYYY.MM.DD", timestamp() )
-APP = "hermes-extras"
+DATE   = formatdate("YYYY.MM.DD", timestamp())
+APP    = "hermes-extras"
 SOURCE = "https://github.com/soulwhisper/containers"
 variable "GIT_SHA" {}
+
+# caveman skill pack release tag (no release assets upstream -> tarball).
+variable "CAVEMAN_VERSION" {
+  // renovate: datasource=github-releases depName=JuliusBrussee/caveman
+  default = "v1.9.1"
+}
 
 group "default" {
   targets = ["image-local"]
@@ -9,22 +15,25 @@ group "default" {
 
 target "image" {
   inherits = ["docker-metadata-action"]
+  args = {
+    CAVEMAN_VERSION = "${CAVEMAN_VERSION}"
+  }
   labels = {
-    "org.opencontainers.image.vendor" = "soulwhisper"
-    "org.opencontainers.image.source" = "https://github.com/soulwhisper/containers"
-    "org.opencontainers.image.created" = "${DATE}"
+    "org.opencontainers.image.vendor"   = "soulwhisper"
+    "org.opencontainers.image.source"   = "https://github.com/soulwhisper/containers"
+    "org.opencontainers.image.created"  = "${DATE}"
     "org.opencontainers.image.revision" = "${GIT_SHA}"
-    "org.opencontainers.image.title" = "${APP}"
-    "org.opencontainers.image.url" = "${SOURCE}"
-    "org.opencontainers.image.version" = "${DATE}"
+    "org.opencontainers.image.title"    = "${APP}"
+    "org.opencontainers.image.url"      = "${SOURCE}"
+    "org.opencontainers.image.version"  = "${DATE}"
   }
   no-cache = true
 }
 
 target "image-local" {
   inherits = ["image"]
-  output = ["type=docker"]
-  tags = ["${APP}:${DATE}"]
+  output   = ["type=docker"]
+  tags     = ["${APP}:${DATE}"]
 }
 
 target "image-all" {

@@ -27,6 +27,17 @@ RUN set -eux; \
     done; \
     chown -R 10000:10000 /data
 
+# caveman skill pack — prompt skills, not binaries. Upstream ships no release
+# assets, so mise can't fetch it; pull the pinned release tarball instead.
+ARG CAVEMAN_VERSION
+RUN set -eux; \
+    curl -fsSL "https://github.com/JuliusBrussee/caveman/archive/refs/tags/${CAVEMAN_VERSION}.tar.gz" -o /tmp/caveman.tar.gz; \
+    tar -xzf /tmp/caveman.tar.gz -C /tmp; \
+    mkdir -p /skills; \
+    cp -r "/tmp/caveman-${CAVEMAN_VERSION#v}/skills/." /skills/; \
+    rm -rf /tmp/caveman*; \
+    chown -R 10000:10000 /skills
+
 USER 10000:10000
 WORKDIR /data
 

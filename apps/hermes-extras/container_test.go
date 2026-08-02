@@ -59,4 +59,31 @@ func Test(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
 			"sh", "-c", "/data/rtk --version || /data/rtk version || /data/rtk -v")
 	})
+
+	// ---- caveman skills ----------------------------------------------------
+
+	t.Run("Check all caveman skill dirs are bundled", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
+			"sh", "-c", "for s in caveman caveman-commit caveman-review caveman-help caveman-stats caveman-compress cavecrew; do test -f \"/skills/$s/SKILL.md\" || exit 1; done")
+	})
+
+	// ---- install.sh (initContainer entrypoint) -----------------------------
+
+	t.Run("Check install.sh mirrors binaries and skills", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image,
+			&testhelpers.ContainerConfig{Env: map[string]string{
+				"BIN_DIR":    "/tmp/bin",
+				"SKILLS_DIR": "/tmp/skills",
+			}},
+			"sh", "-c", "/app/install.sh && test -x /tmp/bin/rtk && test -f /tmp/skills/caveman/SKILL.md")
+	})
+
+	t.Run("Check install.sh is idempotent", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image,
+			&testhelpers.ContainerConfig{Env: map[string]string{
+				"BIN_DIR":    "/tmp/bin",
+				"SKILLS_DIR": "/tmp/skills",
+			}},
+			"sh", "-c", "/app/install.sh && /app/install.sh && test -f /tmp/skills/cavecrew/SKILL.md")
+	})
 }

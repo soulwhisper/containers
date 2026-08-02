@@ -4,22 +4,21 @@ Bundle [hermes-agent](https://github.com/NousResearch/hermes-agent) extra binari
 
 Tools are declared in [`app/.mise.toml`](./app/.mise.toml) and fetched at build time by [`mise`](https://mise.jdx.dev/). All resulting binaries are flattened into `/data/` for predictable mounting.
 
+Also bundles the [caveman](https://github.com/JuliusBrussee/caveman) skill pack (pinned tarball, version managed via `CAVEMAN_VERSION` in [`docker-bake.hcl`](./docker-bake.hcl)) under `/skills/` — prompt skills, not binaries, so mise cannot fetch them.
+
 ### Example usage
+
+The baked [`app/install.sh`](./app/install.sh) mirrors binaries into `$BIN_DIR` (default `/opt/data/.local/bin`) and the caveman skills into `$SKILLS_DIR` (default `/opt/data/skills/productivity`, i.e. `$HERMES_HOME/skills/productivity`). Idempotent; skills are exact-synced, foreign files in `BIN_DIR` are left alone.
 
 ```yaml
 spec:
   initContainers:
     - name: hermes-extras
       image: ghcr.io/soulwhisper/hermes-extras:latest
-      command:
-        [
-          "sh",
-          "-c",
-          "cp -v /data/* /opt/data/.local/bin/ && chmod +x /opt/data/.local/bin/*",
-        ]
+      command: ["/bin/sh", "/app/install.sh"]
       volumeMounts:
         - name: extras
-          mountPath: /opt/data/.local/bin
+          mountPath: /opt/data
   containers:
     - name: hermes-agent
       image: ghcr.io/soulwhisper/hermes-suite:latest
@@ -28,10 +27,11 @@ spec:
           value: /opt/data/.local/bin:/opt/hermes/.venv/bin:/usr/local/bin:/usr/bin:/bin
       volumeMounts:
         - name: extras
-          mountPath: /opt/data/.local/bin
+          mountPath: /opt/data
   volumes:
     - name: extras
-      emptyDir: {}
+      persistentVolumeClaim:
+        claimName: hermes-agent
 ```
 
 ### Discovery

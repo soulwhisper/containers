@@ -1,0 +1,15 @@
+[settings]
+disable_hints = ["*"]
+experimental = true
+idiomatic_version_file_enable_tools = ["node", "python", "go", "rust"]
+
+[tools]
+"github:can1357/oh-my-pi" = "17.2.9"
+"github:rtk-ai/rtk" = "latest"
+gh = "latest"
+just = "latest"
+jq = "latest"
+prek = "latest"
+tmux = "latest"
+uv = "latest"
+yq = "latest"

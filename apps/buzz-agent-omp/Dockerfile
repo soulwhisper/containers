@@ -50,8 +50,8 @@ ENV HOME=/home/agent \
 
 COPY app /app
 RUN chmod +x /app/entrypoint.sh && \
-    install -dm 755 -o dev -g dev /home/agent/.config/mise && \
-    install -m 644 -o dev -g dev /app/.mise.toml /home/agent/.config/mise/config.toml
+    install -dm 755 -o agent -g agent /home/agent/.config/mise && \
+    install -m 644 -o agent -g agent /app/.mise.toml /home/agent/.config/mise/config.toml
 
 USER 2000:2000
 WORKDIR /home/agent

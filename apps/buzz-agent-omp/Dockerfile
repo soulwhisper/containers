@@ -22,8 +22,8 @@ RUN apt update -y && \
 # ---- non-root agent user (uid=gid=2000, bash login shell) ------------------
 # git: wildcard safe.directory for mounted workspaces; x509 commit signing via
 # the agent's nostr key, mirroring the upstream sprig image contract.
-RUN groupadd -g "${GID}" dev && \
-    useradd -m -u "${UID}" -g "${GID}" -s /bin/bash dev && \
+RUN groupadd -g "${GID}" agent && \
+    useradd -m -u "${UID}" -g "${GID}" -s /bin/bash agent && \
     git config --system --add safe.directory '*' && \
     git config --system gpg.format x509 && \
     git config --system gpg.x509.program /usr/local/bin/git-sign-nostr && \
@@ -42,24 +42,24 @@ RUN for name in \
 # Identity, relay and model routing are supplied entirely by container env at
 # deploy time (from Secrets): BUZZ_PRIVATE_KEY, BUZZ_RELAY_URL, BUZZ_AUTH_TAG,
 # BUZZ_API_TOKEN, and omp provider credentials. Only harness defaults are baked.
-ENV HOME=/home/dev \
-    MISE_DATA_DIR=/home/dev/.local/share/mise \
-    PATH=/home/dev/.local/share/mise/shims:/usr/local/bin:/usr/bin:/bin \
+ENV HOME=/home/agent \
+    MISE_DATA_DIR=/home/agent/.local/share/mise \
+    PATH=/home/agent/.local/share/mise/shims:/usr/local/bin:/usr/bin:/bin \
     BUZZ_ACP_AGENT_COMMAND=omp \
     BUZZ_ACP_AGENT_ARGS=acp
 
 COPY app /app
 RUN chmod +x /app/entrypoint.sh && \
-    install -dm 755 -o dev -g dev /home/dev/.config/mise && \
-    install -m 644 -o dev -g dev /app/.mise.toml /home/dev/.config/mise/config.toml
+    install -dm 755 -o dev -g dev /home/agent/.config/mise && \
+    install -m 644 -o dev -g dev /app/.mise.toml /home/agent/.config/mise/config.toml
 
 USER 2000:2000
-WORKDIR /home/dev
+WORKDIR /home/agent
 
 # install every tool from the global .mise.toml; expose them via shims on PATH
-RUN mise trust /home/dev/.config/mise/config.toml && \
+RUN mise trust /home/agent/.config/mise/config.toml && \
     mise install && \
     mise reshim && \
-    echo 'eval "$(mise activate bash)"' >> /home/dev/.bashrc
+    echo 'eval "$(mise activate bash)"' >> /home/agent/.bashrc
 
 ENTRYPOINT ["/app/entrypoint.sh"]

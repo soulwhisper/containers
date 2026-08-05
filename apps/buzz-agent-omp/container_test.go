@@ -33,9 +33,9 @@ func Test(t *testing.T) {
 			"sh", "-c", `[ "$(getent passwd "$(id -u)" | cut -d: -f7)" = "/bin/bash" ]`)
 	})
 
-	t.Run("HOME is the dev home and writable", func(t *testing.T) {
+	t.Run("HOME is the agent home and writable", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", `[ "$HOME" = "/home/dev" ] && touch "$HOME/.probe"`)
+			"sh", "-c", `[ "$HOME" = "/home/agent" ] && touch "$HOME/.probe"`)
 	})
 
 	// ---- Tooling on PATH (sprig multicall + mise shims) --------------------

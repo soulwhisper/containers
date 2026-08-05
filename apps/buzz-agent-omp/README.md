@@ -46,15 +46,6 @@ spec:
         BUZZ_PRIVATE_KEY:
           valueFrom:
             secretKeyRef: { name: buzz-agent, key: nsec }
-        BUZZ_AUTH_TAG:
-          valueFrom:
-            secretKeyRef: { name: buzz-agent, key: auth-tag }
-        ANTHROPIC_API_KEY:
-          valueFrom:
-            secretKeyRef: { name: llm-api, key: anthropic }
-      volumeMounts:
-        - name: workspace
-          mountPath: /workspace
 ```
 
 Commits made by the agent are x509-signed with its nostr key (`git-sign-nostr` is configured system-wide, mirroring the upstream sprig image), and relay-hosted git remotes authenticate through `git-credential-nostr`, scoped to `BUZZ_RELAY_URL` by the entrypoint.

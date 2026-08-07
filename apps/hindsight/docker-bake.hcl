@@ -5,7 +5,7 @@ variable "GIT_SHA" {}
 
 variable "VERSION" {
   // renovate: datasource=docker depName=ghcr.io/vectorize-io/hindsight versioning=docker
-  default = "0.8.6-slim"
+  default = "0.9.0-slim"
 }
 
 group "default" {

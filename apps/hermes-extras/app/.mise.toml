@@ -2,4 +2,4 @@
 experimental = true
 
 [tools]
-"github:rtk-ai/rtk" = "0.44.2"
+"github:rtk-ai/rtk" = "0.45.0"

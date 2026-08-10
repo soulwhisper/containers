@@ -73,8 +73,7 @@
       ignoreTests: false,
     },
     {
-      description: ["Auto-merge Docker Digest"],
-      matchDatasources: ["docker"],
+      description: ["Auto-merge Digest"],
       automerge: true,
       automergeType: "branch",
       matchUpdateTypes: ["digest"],

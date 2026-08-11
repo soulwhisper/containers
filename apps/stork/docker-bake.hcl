@@ -5,7 +5,7 @@ variable "GIT_SHA" {}
 
 variable "VERSION" {
   // renovate: datasource=github-tags depName=isc-projects/stork
-  default = "v2.5.0"
+  default = "v2.5.1"
 }
 
 group "default" {

@@ -103,5 +103,17 @@
      automerge: true,
      platformAutomerge: true,
     },
+    {
+      description: ["Open major updates directly, no dashboard approval"],
+      matchUpdateTypes: ["major"],
+      dependencyDashboardApproval: false,
+    },
+    {
+      description: ["Auto-merge every update via PR once CI passes"],
+      automerge: true,
+      automergeType: "pr",
+      platformAutomerge: true,
+      ignoreTests: false,
+    },
   ],
 }

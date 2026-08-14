@@ -78,6 +78,7 @@
     },
     {
       description: ["Auto-merge every update via PR once CI passes"],
+      matchPackageNames: ["*"],
       automerge: true,
       automergeType: "pr",
       platformAutomerge: true,

@@ -8,7 +8,7 @@
 #   9119 — hermes-dashboard (analytics, built into hermes-agent)
 #   8787 — hermes-webui     (browser chat UI)
 
-ARG AGENT_VERSION=v2026.8.13@sha256:68e15ae2a6d894d0ccbd9f8aacbbe13d4d28fa5dc9b6a303970b67bb2499b1a6
+ARG AGENT_VERSION=v2026.8.16@sha256:f8f548d87d16634d1ad9e3777280f3f577ba2358703f04e18e74007ffd3621bf
 
 FROM nousresearch/hermes-agent:${AGENT_VERSION}
 

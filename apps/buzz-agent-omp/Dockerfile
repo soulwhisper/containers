@@ -2,7 +2,7 @@
 
 # ---- buzz agent body (sprig multicall: buzz-acp/buzz-agent/buzz-dev-mcp/buzz
 # CLI/rg/tree/git-{credential,sign}-nostr), statically linked upstream --------
-FROM ghcr.io/block/buzz-sprig:main@sha256:f95a9f7f6685e7630c98377add70129cca3df3cd49a138a5268c72ccb613a110 AS sprig
+FROM ghcr.io/block/buzz-sprig:main@sha256:e76e017857d387c0bfb8b40e5f02b5162efa31e710fd47e0846abcbca9a7b480 AS sprig
 
 FROM debian:13-slim@sha256:3a39a0592364683e6bab97937b72cad5a8fa6dcbbee90edb3bb48c7f8e94f258
 

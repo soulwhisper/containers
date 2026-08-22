@@ -17,7 +17,7 @@ jobs:
       changed-files: ${{ steps.changed-files.outputs.changed_files }}
     steps:
       - name: Get changed files
-        uses: bjw-s-labs/action-changed-files@a9a36fb08ce06db9b02fbd8026cc2c0945eb9841 # v0.6.0
+        uses: bjw-s-labs/action-changed-files@v0.6.0
         id: changed-files
         with:
           path: apps
@@ -37,18 +37,18 @@ jobs:
       max-parallel: 2
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@v7
 
       - name: Set up Docker Buildx
         if: ${{ matrix.app != '__skip__' }}
-        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4
+        uses: docker/setup-buildx-action@v4
 
       - name: Add include directory to build context
         run: |-
           rsync -a --ignore-existing --progress ./include/ ./apps/${{ matrix.app }}/
 
       - name: Build image
-        uses: docker/bake-action@d3418bd7d0e9324001bca92fa8ba175ea7e6dc9b # v7
+        uses: docker/bake-action@v7
         id: bake
         with:
           load: true
@@ -61,7 +61,7 @@ jobs:
 
       - name: Set up Go
         if: ${{ matrix.app != '__skip__' }}
-        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
 
@@ -96,4 +96,4 @@ jobs:
     permissions:
       actions: write
     steps:
-      - uses: liskin/gh-workflow-keepalive@f72ff1a1336129f29bf0166c0fd0ca6cf1bcb38c # v1
+      - uses: liskin/gh-workflow-keepalive@v1

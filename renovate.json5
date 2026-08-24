@@ -1,94 +1,147 @@
 {
-  $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["github>soulwhisper/renovate-config"],
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'github>soulwhisper/renovate-config',
+  ],
   customManagers: [
     {
-      customType: "regex",
-      description: "Process Annotations in Docker Bake",
-      managerFilePatterns: ["/(^|/)docker-bake\\.hcl$/"],
+      customType: 'regex',
+      description: 'Process Annotations in Docker Bake',
+      managerFilePatterns: [
+        '/(^|/)docker-bake\\.hcl$/',
+      ],
       matchStrings: [
         'datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( versioning=(?<versioning>\\S+))?\\n.+ = "(?<currentValue>[^"]+)"',
       ],
-      datasourceTemplate: "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}",
-      versioningTemplate: "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
+      datasourceTemplate: '{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}',
+      versioningTemplate: '{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}',
     },
     {
-      customType: "regex",
-      description: "Helm chart versions pinned in flux-mirror configs",
-      managerFilePatterns: ["/(^|/)flux-mirror\\.yaml$/"],
+      customType: 'regex',
+      description: 'Helm chart versions pinned in flux-mirror configs',
+      managerFilePatterns: [
+        '/(^|/)flux-mirror\\.yaml$/',
+      ],
       matchStrings: [
         '# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+) registryUrl=(?<registryUrl>\\S+)\\n\\s+version: "(?<currentValue>[^"]+)"',
       ],
-      datasourceTemplate: "{{#if datasource}}{{{datasource}}}{{else}}helm{{/if}}",
-      registryUrlTemplate: "{{{registryUrl}}}",
+      datasourceTemplate: '{{#if datasource}}{{{datasource}}}{{else}}helm{{/if}}',
+      registryUrlTemplate: '{{{registryUrl}}}',
     },
   ],
   packageRules: [
     {
-      description: ["Release Rules for Chart Mirror Updates"],
-      additionalBranchPrefix: "{{parentDir}}-",
-      commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",
-      commitMessageTopic: "{{depName}}",
-      matchFileNames: ["**/flux-mirror.yaml"],
-      semanticCommitScope: "{{parentDir}}",
-      semanticCommitType: "release",
+      description: [
+        'Release Rules for Chart Mirror Updates',
+      ],
+      additionalBranchPrefix: '{{parentDir}}-',
+      commitMessageExtra: '( {{currentVersion}} → {{newVersion}} )',
+      commitMessageTopic: '{{depName}}',
+      matchFileNames: [
+        '**/flux-mirror.yaml',
+      ],
+      semanticCommitScope: '{{parentDir}}',
+      semanticCommitType: 'release',
     },
     {
-      description: "Disable pin digests for custom-managed versions in docker-bake.hcl",
-      matchManagers: ["custom.regex"],
-      matchDatasources: ["docker"],
+      description: 'Disable pin digests for custom-managed versions in docker-bake.hcl',
+      matchManagers: [
+        'custom.regex',
+      ],
+      matchDatasources: [
+        'docker',
+      ],
       pinDigests: false,
     },
     {
-      description: "Floating tags (main/latest) still track digests; recreateClosed keeps automerge on for repeat digest PRs (identical branch+title triggers automergedPreviously otherwise)",
-      matchDatasources: ["docker"],
-      matchUpdateTypes: ["digest"],
-      matchCurrentValue: ["/^(main|latest)$/"],
+      description: 'Floating tags (main/latest) still track digests; recreateClosed keeps automerge on for repeat digest PRs (identical branch+title triggers automergedPreviously otherwise)',
+      matchDatasources: [
+        'docker',
+      ],
+      matchUpdateTypes: [
+        'digest',
+      ],
+      matchCurrentValue: '/^(main|latest)$/',
       enabled: true,
-      recreateClosed: true,
+      recreateWhen: 'always',
     },
     {
-      description: ["Release Rules for Application Updates"],
-      additionalBranchPrefix: "{{parentDir}}-",
-      commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",
-      commitMessageTopic: "{{depName}}",
-      matchFileNames: ["**/docker-bake.hcl", "**/Dockerfile"],
-      semanticCommitScope: "{{parentDir}}",
-      semanticCommitType: "release",
+      description: [
+        'Release Rules for Application Updates',
+      ],
+      additionalBranchPrefix: '{{parentDir}}-',
+      commitMessageExtra: '( {{currentVersion}} → {{newVersion}} )',
+      commitMessageTopic: '{{depName}}',
+      matchFileNames: [
+        '**/docker-bake.hcl',
+        '**/Dockerfile',
+      ],
+      semanticCommitScope: '{{parentDir}}',
+      semanticCommitType: 'release',
     },
     {
-      description: ["Allowed Alpine Version for Base Images"],
-      matchDatasources: ["docker"],
-      matchFileNames: ["**/Dockerfile"],
-      matchPackageNames: ["/alpine/"],
-      allowedVersions: "/3\\.23/",
+      description: [
+        'Allowed Alpine Version for Base Images',
+      ],
+      matchDatasources: [
+        'docker',
+      ],
+      matchFileNames: [
+        '**/Dockerfile',
+      ],
+      matchPackageNames: [
+        '/alpine/',
+      ],
+      allowedVersions: '/3\\.23/',
     },
     {
-      description: ["Allowed Python Version for Base Images"],
-      matchDatasources: ["docker"],
-      matchFileNames: ["**/Dockerfile"],
-      matchPackageNames: ["/python/"],
-      allowedVersions: "/3\\.14-alpine3\\.23/",
+      description: [
+        'Allowed Python Version for Base Images',
+      ],
+      matchDatasources: [
+        'docker',
+      ],
+      matchFileNames: [
+        '**/Dockerfile',
+      ],
+      matchPackageNames: [
+        '/python/',
+      ],
+      allowedVersions: '/3\\.14-alpine3\\.23/',
     },
     {
-     description: "Batch high-cadence hermes-webui into one scheduled rollup",
-     matchManagers: ["custom.regex"],
-     matchDepNames: ["nesquena/hermes-webui"],
-     groupName: "hermes-webui",
-     schedule: ["before 6am"],
-     automerge: true,
-     platformAutomerge: true,
+      description: 'Batch high-cadence hermes-webui into one scheduled rollup',
+      matchManagers: [
+        'custom.regex',
+      ],
+      matchDepNames: [
+        'nesquena/hermes-webui',
+      ],
+      groupName: 'hermes-webui',
+      schedule: [
+        'before 6am',
+      ],
+      automerge: true,
+      platformAutomerge: true,
     },
     {
-      description: ["Open major updates directly, no dashboard approval"],
-      matchUpdateTypes: ["major"],
+      description: [
+        'Open major updates directly, no dashboard approval',
+      ],
+      matchUpdateTypes: [
+        'major',
+      ],
       dependencyDashboardApproval: false,
     },
     {
-      description: ["Auto-merge every update via PR once CI passes"],
-      matchPackageNames: ["*"],
+      description: [
+        'Auto-merge every update via PR once CI passes',
+      ],
+      matchPackageNames: [
+        '*',
+      ],
       automerge: true,
-      automergeType: "pr",
+      automergeType: 'pr',
       platformAutomerge: true,
       ignoreTests: false,
     },

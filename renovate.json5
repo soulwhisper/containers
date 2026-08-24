@@ -43,7 +43,7 @@
       description: "Floating tags (main/latest) still track digests; recreateClosed keeps automerge on for repeat digest PRs (identical branch+title triggers automergedPreviously otherwise)",
       matchDatasources: ["docker"],
       matchUpdateTypes: ["digest"],
-      matchCurrentValues: ["/^(main|latest)$/"],
+      matchCurrentValue: ["/^(main|latest)$/"],
       enabled: true,
       recreateClosed: true,
     },

@@ -6,7 +6,7 @@ variable "GIT_SHA" {}
 # caveman skill pack release tag (no release assets upstream -> tarball).
 variable "CAVEMAN_VERSION" {
   // renovate: datasource=github-releases depName=JuliusBrussee/caveman
-  default = "v2.4.0"
+  default = "v2.5.0"
 }
 
 group "default" {

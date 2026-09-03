@@ -1,16 +1,5 @@
 # syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 
-# https://github.com/NousResearch/hermes-agent/blob/main/Dockerfile
-FROM debian:13-slim@sha256:3a39a0592364683e6bab97937b72cad5a8fa6dcbbee90edb3bb48c7f8e94f258
-
-RUN apt update -y && \
-    apt install -y --no-install-recommends curl ca-certificates && \
-    install -dm 755 /etc/apt/keyrings && \
-    curl -fSs https://mise.en.dev/gpg-key.pub | tee /etc/apt/keyrings/mise-archive-keyring.asc 1> /dev/null  && \
-    echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.asc] https://mise.en.dev/deb stable main" | tee /etc/apt/sources.list.d/mise.list  && \
-    apt update -y && apt install -y --no-install-recommends mise file && \
-    rm -rf /var/lib/apt/lists/*
-
 # buzz CLI — required by the hermes `buzz` platform plugin (adapter shells out
 # to `buzz`, JSON in/out). Upstream ships no CLI release assets and the relay
 # image (ghcr.io/block/buzz) carries only buzz-relay/buzz-admin/buzz-pair-relay,
@@ -25,6 +14,17 @@ RUN set -eux; \
     git checkout "${BUZZ_REF}"; \
     cargo build --release --locked -p buzz-cli; \
     strip target/release/buzz
+
+# https://github.com/NousResearch/hermes-agent/blob/main/Dockerfile
+FROM debian:13-slim@sha256:3a39a0592364683e6bab97937b72cad5a8fa6dcbbee90edb3bb48c7f8e94f258
+
+RUN apt update -y && \
+    apt install -y --no-install-recommends curl ca-certificates && \
+    install -dm 755 /etc/apt/keyrings && \
+    curl -fSs https://mise.en.dev/gpg-key.pub | tee /etc/apt/keyrings/mise-archive-keyring.asc 1> /dev/null  && \
+    echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.asc] https://mise.en.dev/deb stable main" | tee /etc/apt/sources.list.d/mise.list  && \
+    apt update -y && apt install -y --no-install-recommends mise file && \
+    rm -rf /var/lib/apt/lists/*
 
 # install every tool declared in .mise.toml
 # github_token secret: MISE_GITHUB_TOKEN authenticates api.github.com release

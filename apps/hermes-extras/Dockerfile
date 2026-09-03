@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 
 # Buzz CLI
-FROM rust:1.88-trixie AS buzz-cli
+FROM rust:1.88-trixie@sha256:f2a17efbe58b00470be6e73dbea79705a789ee20ee8de2dcdaf73c0c6091f1db AS buzz-cli
 ARG BUZZ_VERSION
 RUN set -eux; \
     git clone --depth 1 --branch "${BUZZ_VERSION}" https://github.com/block/buzz /build; \

@@ -69,8 +69,9 @@ func Test(t *testing.T) {
 	})
 
 	t.Run("Check buzz binary runs", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", "/data/buzz --version || /data/buzz -v")
+		// buzz-cli has no clap `version` attribute — `--version` is an unknown
+		// flag (exit 1). `--help` is the supported zero-side-effect success path.
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "/data/buzz", "--help")
 	})
 
 	// ---- caveman skills ----------------------------------------------------

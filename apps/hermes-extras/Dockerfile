@@ -1,10 +1,6 @@
 # syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 
-# buzz CLI — required by the hermes `buzz` platform plugin (adapter shells out
-# to `buzz`, JSON in/out). Upstream ships no CLI release assets and the relay
-# image (ghcr.io/block/buzz) carries only buzz-relay/buzz-admin/buzz-pair-relay,
-# so build buzz-cli from source at the pinned block/buzz git tag (BUZZ_VERSION,
-# renovate-tracked via github-tags).
+# Buzz CLI
 FROM rust:1.88-trixie AS buzz-cli
 ARG BUZZ_VERSION
 RUN set -eux; \

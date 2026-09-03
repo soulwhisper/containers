@@ -9,16 +9,11 @@ variable "CAVEMAN_VERSION" {
   default = "v2.5.0"
 }
 
-# buzz relay image tag the bundled CLI is paired with (renovate tracks the tag;
-# BUZZ_REF below must be updated to that tag's org.opencontainers.image.revision).
+# buzz-cli source tag — the CLI is built from the block/buzz git repo tag
+# (upstream ships no CLI release assets; renovate tracks repo tags).
 variable "BUZZ_VERSION" {
-  // renovate: datasource=docker depName=ghcr.io/block/buzz
-  default = "0.1.1"
-}
-
-# source revision of ghcr.io/block/buzz:${BUZZ_VERSION}
-variable "BUZZ_REF" {
-  default = "68a0cc8506be4ea1fb110b65eec0787e4cd84378"
+  // renovate: datasource=github-tags depName=block/buzz
+  default = "v0.5.2"
 }
 
 group "default" {
@@ -29,7 +24,7 @@ target "image" {
   inherits = ["docker-metadata-action"]
   args = {
     CAVEMAN_VERSION = "${CAVEMAN_VERSION}"
-    BUZZ_REF        = "${BUZZ_REF}"
+    BUZZ_VERSION    = "${BUZZ_VERSION}"
   }
   # read from the bake-action step env (MISE_GITHUB_TOKEN)
   secret = ["id=github_token,env=MISE_GITHUB_TOKEN"]

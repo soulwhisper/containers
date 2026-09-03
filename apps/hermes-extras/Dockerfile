@@ -3,15 +3,13 @@
 # buzz CLI — required by the hermes `buzz` platform plugin (adapter shells out
 # to `buzz`, JSON in/out). Upstream ships no CLI release assets and the relay
 # image (ghcr.io/block/buzz) carries only buzz-relay/buzz-admin/buzz-pair-relay,
-# so build from source at the exact commit the deployed relay image was built
-# from (BUZZ_REF = image label org.opencontainers.image.revision; keep in sync
-# with the relay image tag in home-ops).
+# so build buzz-cli from source at the pinned block/buzz git tag (BUZZ_VERSION,
+# renovate-tracked via github-tags).
 FROM rust:1.88-trixie AS buzz-cli
-ARG BUZZ_REF
+ARG BUZZ_VERSION
 RUN set -eux; \
-    git clone --filter=blob:none https://github.com/block/buzz /build; \
+    git clone --depth 1 --branch "${BUZZ_VERSION}" https://github.com/block/buzz /build; \
     cd /build; \
-    git checkout "${BUZZ_REF}"; \
     cargo build --release --locked -p buzz-cli; \
     strip target/release/buzz
 

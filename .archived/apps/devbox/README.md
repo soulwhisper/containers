@@ -1,3 +1,5 @@
+> **ARCHIVED** — no consumers (repo/org-wide code search), no observable downloads, CI-only test history. Source frozen; last published image remains on ghcr.io/soulwhisper/devbox as-is. Restore by moving back to `apps/`.
+
 ## devbox
 
 A long-running, cluster-internal dev container for **git + [Claude Code](https://github.com/anthropics/claude-code)**. Tools are declared in [`app/.mise.toml`](./app/.mise.toml) and fetched at build time by [`mise`](https://mise.jdx.dev/); `git`/`bash`/`openssh` come from the base image.

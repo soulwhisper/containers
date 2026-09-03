@@ -1,3 +1,5 @@
+> **ARCHIVED** — no consumers (repo/org-wide code search), no observable downloads, CI-only test history. Source frozen; last published image remains on ghcr.io/soulwhisper/stork as-is. Restore by moving back to `apps/`.
+
 ## ISC-Stork on alpine
 
 Since the official ISC Stork project does not provide a native Docker image, this solution utilizes a lightweight Alpine Linux base to build a custom container. By integrating supervisord as the process manager and a dynamic entrypoint.sh script, this single image can be toggled between Server and Agent modes via environment variables. This approach ensures high availability with automatic process restarts while maintaining a minimal footprint and full compatibility with host-side services like Kea DHCP and BIND9.

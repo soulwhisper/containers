@@ -3,6 +3,8 @@
   extends: [
     'github>soulwhisper/renovate-config',
   ],
+  // archived apps keep their files for reference but must not receive updates
+  ignorePaths: ['**/.archived/**'],
   customManagers: [
     {
       customType: 'regex',

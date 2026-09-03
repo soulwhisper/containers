@@ -92,11 +92,3 @@ jobs:
       - name: All jobs passed or skipped?
         if: ${{ !contains(needs.*.result, 'failure') }}
         run: echo "All jobs passed or skipped"
-
-  workflow-keepalive:
-    if: github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write
-    steps:
-      - uses: liskin/gh-workflow-keepalive@v1

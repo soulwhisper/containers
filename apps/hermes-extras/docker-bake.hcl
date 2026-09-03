@@ -9,6 +9,13 @@ variable "CAVEMAN_VERSION" {
   default = "v2.5.0"
 }
 
+# buzz-cli source tag — the CLI is built from the block/buzz git repo tag
+# (upstream ships no CLI release assets; renovate tracks repo tags).
+variable "BUZZ_VERSION" {
+  // renovate: datasource=github-tags depName=block/buzz
+  default = "v0.5.2"
+}
+
 group "default" {
   targets = ["image-local"]
 }
@@ -17,7 +24,10 @@ target "image" {
   inherits = ["docker-metadata-action"]
   args = {
     CAVEMAN_VERSION = "${CAVEMAN_VERSION}"
+    BUZZ_VERSION    = "${BUZZ_VERSION}"
   }
+  # read from the bake-action step env (MISE_GITHUB_TOKEN)
+  secret = ["id=github_token,env=MISE_GITHUB_TOKEN"]
   labels = {
     "org.opencontainers.image.vendor"   = "soulwhisper"
     "org.opencontainers.image.source"   = "https://github.com/soulwhisper/containers"
@@ -26,6 +36,7 @@ target "image" {
     "org.opencontainers.image.title"    = "${APP}"
     "org.opencontainers.image.url"      = "${SOURCE}"
     "org.opencontainers.image.version"  = "${DATE}"
+    "hermes-extras.buzz-version"        = "${BUZZ_VERSION}"
   }
   no-cache = true
 }

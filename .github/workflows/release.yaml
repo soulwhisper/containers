@@ -97,6 +97,9 @@ jobs:
           targets: image-all
         env:
           GIT_SHA: ${{ github.sha }}
+          # mise's github backend hits api.github.com for release resolution;
+          # authenticate to avoid anonymous rate limits in CI builds
+          MISE_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cleanup untagged
         uses: actions/delete-package-versions@v5
@@ -123,11 +126,3 @@ jobs:
         if: ${{ !(contains(needs.*.result, 'failure')) }}
         run: |-
           echo "All jobs passed or skipped" && echo "${{ toJSON(needs.*.result) }}"
-
-  workflow-keepalive:
-    if: github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write
-    steps:
-      - uses: liskin/gh-workflow-keepalive@v1

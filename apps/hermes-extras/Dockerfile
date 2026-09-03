@@ -1,5 +1,14 @@
 # syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 
+# Buzz CLI
+FROM rust:1.88-trixie AS buzz-cli
+ARG BUZZ_VERSION
+RUN set -eux; \
+    git clone --depth 1 --branch "${BUZZ_VERSION}" https://github.com/block/buzz /build; \
+    cd /build; \
+    cargo build --release --locked -p buzz-cli; \
+    strip target/release/buzz
+
 # https://github.com/NousResearch/hermes-agent/blob/main/Dockerfile
 FROM debian:13-slim@sha256:3a39a0592364683e6bab97937b72cad5a8fa6dcbbee90edb3bb48c7f8e94f258
 
@@ -12,9 +21,14 @@ RUN apt update -y && \
     rm -rf /var/lib/apt/lists/*
 
 # install every tool declared in .mise.toml
+# github_token secret: MISE_GITHUB_TOKEN authenticates api.github.com release
+# resolution (anonymous = 60 req/h); optional, local builds fall back to anonymous
 COPY app /app
 WORKDIR /app
-RUN mise trust && mise install
+RUN --mount=type=secret,id=github_token,required=false \
+    MISE_GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)"; \
+    export MISE_GITHUB_TOKEN; \
+    mise trust && mise install
 
 # Collect binaries into a flat /data/ layout.
 # mise bin-paths prints one path per installed tool (handles bin/ vs root layouts).
@@ -26,6 +40,9 @@ RUN set -eux; \
         -exec sh -c 'file "$1" | grep -q "ELF.*executable" && cp -v "$1" /data/' _ {} \; ; \
     done; \
     chown -R 10000:10000 /data
+
+# buzz-cli is built in its own stage (see top of file); add it to the bundle.
+COPY --chown=10000:10000 --from=buzz-cli /build/target/release/buzz /data/buzz
 
 # caveman skill pack — prompt skills, not binaries. Upstream ships no release
 # assets, so mise can't fetch it; pull the pinned release tarball instead.

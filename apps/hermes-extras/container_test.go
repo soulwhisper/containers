@@ -60,6 +60,19 @@ func Test(t *testing.T) {
 			"sh", "-c", "/data/rtk --version || /data/rtk version || /data/rtk -v")
 	})
 
+	t.Run("Check buzz binary exists", func(t *testing.T) {
+		testhelpers.TestFileExists(t, ctx, image, "/data/buzz", nil)
+	})
+
+	t.Run("Check buzz binary is executable", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "test", "-x", "/data/buzz")
+	})
+
+	t.Run("Check buzz binary runs", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
+			"sh", "-c", "/data/buzz --version || /data/buzz -v")
+	})
+
 	// ---- caveman skills ----------------------------------------------------
 
 	t.Run("Check all caveman skill dirs are bundled", func(t *testing.T) {
@@ -75,7 +88,7 @@ func Test(t *testing.T) {
 				"BIN_DIR":    "/tmp/bin",
 				"SKILLS_DIR": "/tmp/skills",
 			}},
-			"sh", "-c", "/app/install.sh && test -x /tmp/bin/rtk && test -f /tmp/skills/caveman/SKILL.md")
+			"sh", "-c", "/app/install.sh && test -x /tmp/bin/rtk && test -x /tmp/bin/buzz && test -f /tmp/skills/caveman/SKILL.md")
 	})
 
 	t.Run("Check install.sh is idempotent", func(t *testing.T) {

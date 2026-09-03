@@ -9,6 +9,18 @@ variable "CAVEMAN_VERSION" {
   default = "v2.5.0"
 }
 
+# buzz relay image tag the bundled CLI is paired with (renovate tracks the tag;
+# BUZZ_REF below must be updated to that tag's org.opencontainers.image.revision).
+variable "BUZZ_VERSION" {
+  // renovate: datasource=docker depName=ghcr.io/block/buzz
+  default = "0.1.1"
+}
+
+# source revision of ghcr.io/block/buzz:${BUZZ_VERSION}
+variable "BUZZ_REF" {
+  default = "68a0cc8506be4ea1fb110b65eec0787e4cd84378"
+}
+
 group "default" {
   targets = ["image-local"]
 }
@@ -17,7 +29,10 @@ target "image" {
   inherits = ["docker-metadata-action"]
   args = {
     CAVEMAN_VERSION = "${CAVEMAN_VERSION}"
+    BUZZ_REF        = "${BUZZ_REF}"
   }
+  # read from the bake-action step env (MISE_GITHUB_TOKEN)
+  secret = ["id=github_token,env=MISE_GITHUB_TOKEN"]
   labels = {
     "org.opencontainers.image.vendor"   = "soulwhisper"
     "org.opencontainers.image.source"   = "https://github.com/soulwhisper/containers"
@@ -26,6 +41,7 @@ target "image" {
     "org.opencontainers.image.title"    = "${APP}"
     "org.opencontainers.image.url"      = "${SOURCE}"
     "org.opencontainers.image.version"  = "${DATE}"
+    "hermes-extras.buzz-version"        = "${BUZZ_VERSION}"
   }
   no-cache = true
 }

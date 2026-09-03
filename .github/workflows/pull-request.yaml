@@ -58,6 +58,9 @@ jobs:
           targets: image-local
         env:
           GIT_SHA: ${{ github.sha }}
+          # mise's github backend hits api.github.com for release resolution;
+          # authenticate to avoid anonymous rate limits in CI builds
+          MISE_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Go
         if: ${{ matrix.app != '__skip__' }}

@@ -11,10 +11,30 @@ RUN apt update -y && \
     apt update -y && apt install -y --no-install-recommends mise file && \
     rm -rf /var/lib/apt/lists/*
 
+# buzz CLI — required by the hermes `buzz` platform plugin (adapter shells out
+# to `buzz`, JSON in/out). Upstream ships no CLI release assets and the relay
+# image (ghcr.io/block/buzz) carries only buzz-relay/buzz-admin/buzz-pair-relay,
+# so build from source at the exact commit the deployed relay image was built
+# from (BUZZ_REF = image label org.opencontainers.image.revision; keep in sync
+# with the relay image tag in home-ops).
+FROM rust:1.88-trixie AS buzz-cli
+ARG BUZZ_REF
+RUN set -eux; \
+    git clone --filter=blob:none https://github.com/block/buzz /build; \
+    cd /build; \
+    git checkout "${BUZZ_REF}"; \
+    cargo build --release --locked -p buzz-cli; \
+    strip target/release/buzz
+
 # install every tool declared in .mise.toml
+# github_token secret: MISE_GITHUB_TOKEN authenticates api.github.com release
+# resolution (anonymous = 60 req/h); optional, local builds fall back to anonymous
 COPY app /app
 WORKDIR /app
-RUN mise trust && mise install
+RUN --mount=type=secret,id=github_token,required=false \
+    MISE_GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)"; \
+    export MISE_GITHUB_TOKEN; \
+    mise trust && mise install
 
 # Collect binaries into a flat /data/ layout.
 # mise bin-paths prints one path per installed tool (handles bin/ vs root layouts).
@@ -26,6 +46,9 @@ RUN set -eux; \
         -exec sh -c 'file "$1" | grep -q "ELF.*executable" && cp -v "$1" /data/' _ {} \; ; \
     done; \
     chown -R 10000:10000 /data
+
+# buzz-cli is built in its own stage (see top of file); add it to the bundle.
+COPY --chown=10000:10000 --from=buzz-cli /build/target/release/buzz /data/buzz
 
 # caveman skill pack — prompt skills, not binaries. Upstream ships no release
 # assets, so mise can't fetch it; pull the pinned release tarball instead.

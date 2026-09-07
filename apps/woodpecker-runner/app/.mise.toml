@@ -1,0 +1,19 @@
+[settings]
+experimental = true
+
+# Tool versions here are the single source of truth for the woodpecker-runner
+# image; renovate bumps them. home-ops/.mise.toml pins talosctl independently
+# (must match the cluster's Talos major.minor) — keep the two aligned.
+[tools]
+# cluster skew: stay within +/-1 minor of the cluster (Talos 1.14 -> k8s 1.34)
+kubectl = "1.34.1"
+crane = "0.22.1"
+kubeconform = "0.8.0"
+"github:StackExchange/dnscontrol" = "4.44.1"
+shellcheck = "0.11.0"
+vendir = "0.46.1"
+talosctl = "1.14.0"
+# mikefarah yq (dr-test renders use strenv/del operators); debian's apt yq
+# is the unrelated python clone
+yq = "4.53.6"
+"github:home-operations/flate" = "0.6.5"

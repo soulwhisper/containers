@@ -6,7 +6,7 @@ experimental = true
 # (must match the cluster's Talos major.minor) — keep the two aligned.
 [tools]
 # cluster skew: stay within +/-1 minor of the cluster (Talos 1.14 -> k8s 1.34)
-kubectl = "1.34.1"
+kubectl = "1.37.0"
 crane = "0.22.1"
 kubeconform = "0.8.0"
 "github:StackExchange/dnscontrol" = "5.0.3"

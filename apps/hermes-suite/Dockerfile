@@ -46,6 +46,13 @@ RUN cd /opt \
     && rm -rf /opt/hermes-webui/.git \
     && echo "__version__ = '${WEBUI_VERSION}'" > /opt/hermes-webui/api/_version.py
 
+# Platform plugins — deps pinned to upstream extras (plugins/platforms/*/).
+# Baked in because runtime lazy-install fails under the cluster egress policy.
+# feishu = ["lark-oapi==1.6.8", "qrcode==7.4.2"] (pyproject.toml)
+RUN uv pip install --python /opt/hermes/.venv/bin/python3 --no-cache-dir \
+        "lark-oapi==1.6.8" \
+        "qrcode==7.4.2"
+
 ENV PATH="/opt/hermes/.venv/bin:$PATH" \
     VIRTUAL_ENV=/opt/hermes/.venv \
     HERMES_HOME=/opt/data \

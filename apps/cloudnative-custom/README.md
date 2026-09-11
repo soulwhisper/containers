@@ -20,8 +20,6 @@ The baseline set mirrors the official `cloudnative-pg/postgresql` bundle
 
 - `ghcr.io/tensorchord/cloudnative-vectorchord:18` ships only `vchord.so` —
   no `vchord_bm25` (cnpg initdb died on the preload) and no `pgroonga`.
-- `ghcr.io/tensorchord/cloudnative-vectorchord-bm25` is not publicly pullable
-  (ghcr 403).
 
 ## Versioning
 

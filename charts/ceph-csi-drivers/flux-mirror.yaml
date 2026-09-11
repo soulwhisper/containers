@@ -6,5 +6,5 @@ charts:
     source: https://ceph.github.io/ceph-csi-operator
     destination: oci://ghcr.io/soulwhisper/charts
     # renovate: datasource=helm depName=ceph-csi-drivers registryUrl=https://ceph.github.io/ceph-csi-operator
-    version: "1.0.4"
+    version: "1.0.5"
     limit: 3

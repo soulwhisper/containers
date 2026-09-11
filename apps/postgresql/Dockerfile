@@ -24,6 +24,9 @@ ARG PG_MAJOR
 
 FROM postgres:${BASE}
 
+# re-declared after FROM (pre-FROM args do not persist into build stages)
+ARG PG_MAJOR
+
 # install pig (latest pigsty CLI) -> all extensions via pig (latest compatible)
 RUN <<EOF
   set -e
@@ -31,6 +34,7 @@ RUN <<EOF
   apt-get install -y --no-install-recommends curl ca-certificates jq
   curl -fsSL https://repo.pigsty.io/pig | bash
   rm -f /etc/apt/sources.list.d/pgdg.sources /etc/apt/sources.list.d/pgdg.list  # pig manages pgdg sources itself
+  pig repo add pgsql -u
   pig ext install -y vchord vchord_bm25 pg_tokenizer pgroonga uuid-ossp pgaudit pg_failover_slots vector postgis -v ${PG_MAJOR}
   apt-get purge -y --auto-remove curl
   rm -rf /var/lib/apt/lists/*

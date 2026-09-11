@@ -12,6 +12,10 @@ func Test(t *testing.T) {
 	image := testhelpers.GetTestImage("ghcr.io/soulwhisper/postgresql:18.6")
 
 	lib := "/usr/lib/postgresql/18/lib/"
+
+	t.Run("cnpg compatibility: postgres user is uid 26", func(t *testing.T) {
+		testhelpers.TestUserUID(t, ctx, image, "postgres", 26)
+	})
 	ext := "/usr/share/postgresql/18/extension/"
 
 	t.Run("vchord library exists", func(t *testing.T) {

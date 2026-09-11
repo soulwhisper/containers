@@ -1,4 +1,4 @@
-# cloudnative-custom
+# postgresql
 
 PostgreSQL (official `postgres` image) with the CloudNativePG operator's
 baseline extensions plus this cluster's search extensions, installed via the

@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 
-# cloudnative-custom: official postgres + the extensions the cnpg stack
+# postgresql: official postgres + the extensions the cnpg stack
 # needs — the cloudnative-pg operator baseline (pgaudit, pg_failover_slots,
 # pgvector, PostGIS) plus this cluster's search extensions (vchord,
 # vchord_bm25, pg_tokenizer, pgroonga) — all installed via the pig CLI

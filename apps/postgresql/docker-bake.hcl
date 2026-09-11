@@ -1,5 +1,5 @@
 DATE = formatdate( "YYYY.MM.DD", timestamp() )
-APP = "cloudnative-custom"
+APP = "postgresql"
 SOURCE = "https://github.com/soulwhisper/containers"
 variable "GIT_SHA" {}
 

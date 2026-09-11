@@ -11,14 +11,10 @@ baseline extensions plus this cluster's search extensions, installed via the
 | `vchord`             | immich, hindsight (vector search)              |
 | `pgroonga`           | hindsight (keyword search)                     |
 | `vchord_bm25`        | optional BM25 hybrid search                    |
-| `pg_tokenizer`       | tokenizer required by `vchord_bm25`            |
-| `vector` (pgvector)  | cnpg baseline / general purpose                |
+| `vector` (pgvector)  | **required by vchord** (package + SQL dependency) |
 | `pgaudit`            | cnpg baseline                                  |
 | `pg_failover_slots`  | cnpg baseline                                  |
-| `postgis`            | cnpg baseline                                  |
-
-The baseline set mirrors what the official `cloudnative-pg/postgresql` image
-bundles (pgaudit, postgres-failover-slots, pgvector, PostGIS).
+The baseline set mirrors the official `cloudnative-pg/postgresql` bundle
 
 ## Why not upstream images
 

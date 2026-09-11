@@ -18,9 +18,9 @@
 # Why not upstream images:
 #   ghcr.io/tensorchord/cloudnative-vectorchord:18 ships only vchord.so —
 #   no vchord_bm25 (preload died in cnpg initdb), no pgroonga.
-#   ghcr.io/tensorchord/cloudnative-vectorchord-bm25 is not publicly pullable.
-
 ARG BASE=18.6-bookworm@sha256:1c59e2c3c818eaa0f0628f695b36e7c9e362d6b219b36a54a32df645cbd7e1af
+ARG PG_MAJOR
+
 
 FROM postgres:${BASE}
 
@@ -31,8 +31,7 @@ RUN <<EOF
   apt-get install -y --no-install-recommends curl ca-certificates jq
   curl -fsSL https://repo.pigsty.io/pig | bash
   rm -f /etc/apt/sources.list.d/pgdg.sources /etc/apt/sources.list.d/pgdg.list  # pig manages pgdg sources itself
-  pig repo add pgsql -u
-  pig ext install -y vchord vchord_bm25 pg_tokenizer pgroonga uuid-ossp pgaudit pg_failover_slots vector postgis -v 18
+  pig ext install -y vchord vchord_bm25 pg_tokenizer pgroonga uuid-ossp pgaudit pg_failover_slots vector postgis -v ${PG_MAJOR}
   apt-get purge -y --auto-remove curl
   rm -rf /var/lib/apt/lists/*
 EOF

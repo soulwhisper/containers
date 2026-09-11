@@ -6,7 +6,8 @@ variable "GIT_SHA" {}
 # Release tags: postgres major (:18 floater) + major.minor.patch (:18.6 pin).
 # cnpg clusters should pin the patch tag so pod restarts are reproducible;
 # upstream pg updates flow through renovate PRs (version + digest).
-# Major floater tag is derived from PG_VERSION (single renovate-tracked value).
+# Major floater tag and the Dockerfile's extension install (-v ${PG_MAJOR})
+# both derive from PG_VERSION (single renovate-tracked value).
 variable "PG_MAJOR" {
   default = split(".", PG_VERSION)[0]
 }
@@ -22,6 +23,9 @@ group "default" {
 
 target "image" {
   inherits = ["docker-metadata-action"]
+  args = {
+    PG_MAJOR = "${PG_MAJOR}"
+  }
   labels = {
     "org.opencontainers.image.vendor" = "soulwhisper"
     "org.opencontainers.image.source" = "https://github.com/soulwhisper/containers"

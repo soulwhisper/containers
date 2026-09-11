@@ -12,6 +12,10 @@ RUN <<EOF
   apt-get install -y --no-install-recommends curl ca-certificates jq
   curl -fsSL https://repo.pigsty.io/pig | bash
   rm -f /etc/apt/sources.list.d/pgdg.sources /etc/apt/sources.list.d/pgdg.list  # pig manages pgdg sources itself
+  # silence pig's untrusted-staging-update noise: pgdg key ships with the base
+  # image; pigsty's own key is unpublished upstream (hence pig's trusted=yes
+  # default) so its NO_PUBKEY warning during 'repo add' is cosmetic
+  cp /usr/local/share/keyrings/postgres.gpg.asc /etc/apt/trusted.gpg.d/postgresql.asc
   pig repo add pgsql -u
   pig ext install -y vchord vchord_bm25 pg_tokenizer pgroonga uuid-ossp pgaudit pg_failover_slots vector postgis -v ${PG_MAJOR}
 EOF

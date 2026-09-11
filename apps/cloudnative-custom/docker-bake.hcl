@@ -3,10 +3,16 @@ APP = "cloudnative-custom"
 SOURCE = "https://github.com/soulwhisper/containers"
 variable "GIT_SHA" {}
 
-# Release tag = postgres major (image tracks upstream postgres via the
-# BASE digest; every upstream update rebuilds with latest pig + extensions).
+# Release tags: postgres major (:18 floater) + major.minor.patch (:18.6 pin).
+# cnpg clusters should pin the patch tag so pod restarts are reproducible;
+# upstream pg updates flow through renovate PRs (version + digest).
 variable "PG_MAJOR" {
   default = "18"
+}
+
+variable "PG_VERSION" {
+  // renovate: datasource=docker depName=postgres versioning=semver
+  default = "18.6"
 }
 
 group "default" {
@@ -22,7 +28,7 @@ target "image" {
     "org.opencontainers.image.revision" = "${GIT_SHA}"
     "org.opencontainers.image.title" = "${APP}"
     "org.opencontainers.image.url" = "${SOURCE}"
-    "org.opencontainers.image.version" = "${PG_MAJOR}"
+    "org.opencontainers.image.version" = "${PG_VERSION}"
   }
   no-cache = true
 }
@@ -30,7 +36,7 @@ target "image" {
 target "image-local" {
   inherits = ["image"]
   output = ["type=docker"]
-  tags = ["${APP}:${PG_MAJOR}"]
+  tags = ["${APP}:${PG_VERSION}"]
 }
 
 target "image-all" {
@@ -41,6 +47,7 @@ target "image-all" {
   ]
   tags = [
     "ghcr.io/soulwhisper/${APP}:sha-${GIT_SHA}",
+    "ghcr.io/soulwhisper/${APP}:${PG_VERSION}",
     "ghcr.io/soulwhisper/${APP}:${PG_MAJOR}",
     "ghcr.io/soulwhisper/${APP}:latest",
   ]

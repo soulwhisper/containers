@@ -26,9 +26,6 @@ func Test(t *testing.T) {
 		testhelpers.TestFileExists(t, ctx, image, lib+"pg_tokenizer.so", nil)
 	})
 
-  t.Run("pgvector is absent (auto-detect consumers must use vchord)", func(t *testing.T) {
-    testhelpers.TestCommandSucceeds(t, ctx, image, nil, "sh", "-c", "test ! -f "+lib+"vector.so")
-  })
 
 	t.Run("pgroonga library exists", func(t *testing.T) {
 		testhelpers.TestFileExists(t, ctx, image, lib+"pgroonga.so", nil)

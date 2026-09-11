@@ -1,17 +1,12 @@
 DATE = formatdate( "YYYY.MM.DD", timestamp() )
-APP = "vectorchord-suite"
+APP = "cloudnative-custom"
 SOURCE = "https://github.com/soulwhisper/containers"
 variable "GIT_SHA" {}
 
-# pig CLI version (github:pgsty/pig release). Extension versions are
-# resolved by pig per PG major — nothing else to pin here.
-variable "PIG_VERSION" {
-  // renovate: datasource=github-releases depName=pgsty/pig
-  default = "1.8.1"
-}
-
-variable "TAG_MAIN" {
-  default = "pig${PIG_VERSION}-pg18"
+# Release tag = postgres major (image tracks upstream postgres via the
+# BASE digest; every upstream update rebuilds with latest pig + extensions).
+variable "PG_MAJOR" {
+  default = "18"
 }
 
 group "default" {
@@ -20,9 +15,6 @@ group "default" {
 
 target "image" {
   inherits = ["docker-metadata-action"]
-  args = {
-    PIG_VERSION = "${PIG_VERSION}"
-  }
   labels = {
     "org.opencontainers.image.vendor" = "soulwhisper"
     "org.opencontainers.image.source" = "https://github.com/soulwhisper/containers"
@@ -30,8 +22,7 @@ target "image" {
     "org.opencontainers.image.revision" = "${GIT_SHA}"
     "org.opencontainers.image.title" = "${APP}"
     "org.opencontainers.image.url" = "${SOURCE}"
-    "org.opencontainers.image.version" = "${TAG_MAIN}"
-    "vectorchord-suite.pig-version" = "${PIG_VERSION}"
+    "org.opencontainers.image.version" = "${PG_MAJOR}"
   }
   no-cache = true
 }
@@ -39,7 +30,7 @@ target "image" {
 target "image-local" {
   inherits = ["image"]
   output = ["type=docker"]
-  tags = ["${APP}:${TAG_MAIN}"]
+  tags = ["${APP}:${PG_MAJOR}"]
 }
 
 target "image-all" {
@@ -50,7 +41,7 @@ target "image-all" {
   ]
   tags = [
     "ghcr.io/soulwhisper/${APP}:sha-${GIT_SHA}",
-    "ghcr.io/soulwhisper/${APP}:${TAG_MAIN}",
+    "ghcr.io/soulwhisper/${APP}:${PG_MAJOR}",
     "ghcr.io/soulwhisper/${APP}:latest",
   ]
 }

@@ -3,18 +3,13 @@ APP = "postgresql"
 SOURCE = "https://github.com/soulwhisper/containers"
 variable "GIT_SHA" {}
 
-# Release tags: postgres major (:18 floater) + major.minor.patch (:18.6 pin).
-# cnpg clusters should pin the patch tag so pod restarts are reproducible;
-# upstream pg updates flow through renovate PRs (version + digest).
-# Major floater tag and the Dockerfile's extension install (-v ${PG_MAJOR})
-# both derive from PG_VERSION (single renovate-tracked value).
-variable "PG_MAJOR" {
-  default = split(".", PG_VERSION)[0]
-}
-
 variable "PG_VERSION" {
   // renovate: datasource=docker depName=postgres versioning=semver
   default = "18.6"
+}
+
+variable "PG_MAJOR" {
+  default = split(".", PG_VERSION)[0]
 }
 
 group "default" {
@@ -54,7 +49,6 @@ target "image-all" {
     "ghcr.io/soulwhisper/${APP}:sha-${GIT_SHA}",
     "ghcr.io/soulwhisper/${APP}:${PG_VERSION}",
     "ghcr.io/soulwhisper/${APP}:${PG_MAJOR}",
-    "ghcr.io/soulwhisper/${APP}:latest",
   ]
 }
 

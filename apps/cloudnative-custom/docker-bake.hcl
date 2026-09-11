@@ -6,8 +6,9 @@ variable "GIT_SHA" {}
 # Release tags: postgres major (:18 floater) + major.minor.patch (:18.6 pin).
 # cnpg clusters should pin the patch tag so pod restarts are reproducible;
 # upstream pg updates flow through renovate PRs (version + digest).
+# Major floater tag is derived from PG_VERSION (single renovate-tracked value).
 variable "PG_MAJOR" {
-  default = "18"
+  default = split(".", PG_VERSION)[0]
 }
 
 variable "PG_VERSION" {

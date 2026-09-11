@@ -17,6 +17,7 @@ RUN <<EOF
 EOF
 
 # cnpg runs instance containers as uid 26
+# ref:https://github.com/cloudnative-pg/postgres-containers/blob/main/Dockerfile
 RUN usermod -u 26 postgres
 USER 26
 

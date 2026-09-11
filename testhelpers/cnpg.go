@@ -2,14 +2,14 @@ package testhelpers
 
 import (
 	"context"
+	"fmt"
 	"testing"
 )
 
-// TestCNPGUserUID asserts the CloudNativePG instance-user convention: the
-// postgres user is uid 26. cnpg runs instance containers (initdb included)
-// as uid 26; images with a different uid fail instance bootstrap with
-// 'user does not exist'.
-func TestCNPGUserUID(t *testing.T, ctx context.Context, image string) {
+// TestUserUID asserts that the given OS user exists and has the given uid.
+// The semantic check name belongs in the app's container_test.go; this is a
+// generic building block.
+func TestUserUID(t *testing.T, ctx context.Context, image string, user string, uid int) {
 	t.Helper()
-	TestCommandSucceeds(t, ctx, image, nil, "sh", "-c", "test \"$(id -u postgres)\" = \"26\"")
+	TestCommandSucceeds(t, ctx, image, nil, "sh", "-c", fmt.Sprintf("test \"$(id -u %s)\" = \"%d\"", user, uid))
 }

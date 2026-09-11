@@ -14,7 +14,7 @@ func Test(t *testing.T) {
 	lib := "/usr/lib/postgresql/18/lib/"
 
 	t.Run("cnpg compatibility: postgres user is uid 26", func(t *testing.T) {
-		testhelpers.TestCNPGUserUID(t, ctx, image)
+		testhelpers.TestUserUID(t, ctx, image, "postgres", 26)
 	})
 	ext := "/usr/share/postgresql/18/extension/"
 

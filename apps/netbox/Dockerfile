@@ -12,7 +12,7 @@ RUN uv pip install \
     netbox-floorplan-plugin \
     netbox-interface-synchronization \
     netbox-plugin-dns \
-    netbox-plugin-prometheus-sd \
+    netbox-plugin-prometheus-sd>=2.1.0 \
     netbox-qrcode \
     netbox-reorder-rack \
     netbox-topology-views \

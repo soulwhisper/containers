@@ -31,7 +31,10 @@ RUN apt-get -qq update \
     && rm -rf /var/lib/apt/lists/*
 
 # supervisord is not packaged for Debian Trixie; install it into its own venv.
-RUN uv venv /opt/supervisor \
+# Must bind to the system python: uv otherwise prefers its managed cpython,
+# which lives under /root/.local/share/uv (0700) and is untraversable by the
+# runtime user — supervisord then dies with "bad interpreter: Permission denied".
+RUN uv venv --python /usr/bin/python3 /opt/supervisor \
     && uv pip install --python /opt/supervisor/bin/python3 supervisor \
     && ln -sf /opt/supervisor/bin/supervisord /usr/local/bin/supervisord \
     && ln -sf /opt/supervisor/bin/supervisorctl /usr/local/bin/supervisorctl

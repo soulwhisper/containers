@@ -47,6 +47,11 @@ func Test(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "which", "supervisord")
 	})
 
+	t.Run("Supervisord executes as default user", func(t *testing.T) {
+		// regression: venv must not bind to uv-managed python under /root (0700)
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "supervisord", "--version")
+	})
+
 	t.Run("Check supervisorctl on PATH", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "which", "supervisorctl")
 	})

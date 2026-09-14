@@ -17,7 +17,7 @@ jobs:
       changed-files: ${{ steps.changed-files.outputs.changed_files }}
     steps:
       - name: Get changed files
-        uses: bjw-s-labs/action-changed-files@v0.6.0
+        uses: bjw-s-labs/action-changed-files@v0.7.0
         id: changed-files
         with:
           path: apps

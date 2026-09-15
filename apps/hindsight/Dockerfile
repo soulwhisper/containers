@@ -43,6 +43,13 @@ ARG RERANKER=BAAI/bge-reranker-v2-m3
 # without an explicit HF_HOME the weights would download into the build user's
 # home and the runtime UID could not read them -> silent re-download at startup
 # (and a hard failure if HF is unreachable through a cross-border proxy).
+# Since 0.10.0 the upstream image's build steps also run as the non-root
+# `hindsight` user, so pre-create the cache dir as root with that ownership;
+# /app itself is root-owned and the user cannot mkdir there.
+USER root
+RUN install -d -o hindsight /app/models
+USER hindsight
+
 ENV HF_HOME=/app/models \
     HF_HUB_DOWNLOAD_TIMEOUT=600
 

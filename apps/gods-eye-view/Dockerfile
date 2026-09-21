@@ -22,7 +22,7 @@
 
 ARG VERSION=main
 
-FROM node:24-bookworm-slim AS upstream
+FROM node:24-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6 AS upstream
 ARG VERSION
 RUN apt-get -qq update \
     && apt-get -qq install --no-install-recommends git ca-certificates \
@@ -37,13 +37,13 @@ RUN git init -q . \
 # Dependencies in their own layer: puppeteer (QA-only dep) downloads Chromium
 # on postinstall — skip it; sharp/rollup/esbuild pull platform-correct prebuilt
 # binaries as npm optional deps.
-FROM node:24-bookworm-slim AS deps
+FROM node:24-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6 AS deps
 WORKDIR /app
 COPY --from=upstream /app/package.json /app/package-lock.json ./
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 RUN npm ci --no-audit --no-fund
 
-FROM node:24-bookworm-slim
+FROM node:24-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6
 ENV HOST=0.0.0.0 \
     PORT=4173 \
     # Upstream recommends enabling these whenever HOST is not localhost: the

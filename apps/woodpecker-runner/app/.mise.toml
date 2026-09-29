@@ -15,5 +15,5 @@ vendir = "0.46.2"
 talosctl = "1.14.1"
 # mikefarah yq (dr-test renders use strenv/del operators); debian's apt yq
 # is the unrelated python clone
-yq = "4.53.6"
+yq = "4.54.1"
 "github:home-operations/flate" = "0.6.5"

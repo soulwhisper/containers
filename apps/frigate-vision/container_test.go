@@ -18,6 +18,13 @@ func Test(t *testing.T) {
 			"python", "-c", "import paho.mqtt.client")
 	})
 
+	// bridge.py constructs mqtt.Client(mqtt.CallbackAPIVersion.VERSION2) — a
+	// paho 2.x-only API. A bare import passes on 1.x, so assert the contract.
+	t.Run("paho v2 callback API contract", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
+			"python", "-c", "from paho.mqtt.client import Client, CallbackAPIVersion; Client(CallbackAPIVersion.VERSION2)")
+	})
+
 	t.Run("httpx imports", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
 			"python", "-c", "import httpx")

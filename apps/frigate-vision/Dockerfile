@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 
-# frigate-vision bridge runtime: python with paho-mqtt + httpx baked in.
+# frigate-vision forwarder runtime: python with paho-mqtt + httpx baked in.
 # Exists so the cluster pod never pip-installs at boot — the frigate-vision
 # CiliumNetworkPolicy allows no Internet egress, and runtime installs are a
 # pypi.org availability dependency either way.

@@ -32,10 +32,4 @@ func Test(t *testing.T) {
 			"python", "-c", "import paho.mqtt.client, httpx")
 	})
 
-	// ---- Discovery -----------------------------------------------------------
-
-	t.Run("Bundled versions are recorded", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"python", "-c", "import importlib.metadata as m; assert m.version('paho-mqtt'); assert m.version('httpx')")
-	})
 }

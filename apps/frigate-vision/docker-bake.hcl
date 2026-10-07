@@ -31,8 +31,6 @@ target "image" {
     "org.opencontainers.image.title"       = "${APP}"
     "org.opencontainers.image.url"         = "${SOURCE}"
     "org.opencontainers.image.version"     = "${DATE}"
-    "frigate-vision.paho-mqtt-version"     = "${PAHO_MQTT_VERSION}"
-    "frigate-vision.httpx-version"         = "${HTTPX_VERSION}"
   }
   no-cache = true
 }

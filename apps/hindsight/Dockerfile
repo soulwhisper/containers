@@ -14,7 +14,7 @@
 # Upstream slim standalone image. ghcr tags are bare-version with a `-slim`
 # suffix (e.g. 0.8.3-slim); GitHub *releases* are v-prefixed. The bake file
 # tracks/overrides VERSION; renovate's dockerfile manager pins the digest.
-ARG VERSION=0.10.2-slim@sha256:5b4211d97f75a0ab2f72b454d96b052815043f818b35abf46a4de77b2a1f46fc
+ARG VERSION=0.10.3-slim@sha256:c0bd6122a1d0d62dc5094ce43150780a28a96ec70109b44c688210231a5ac33a
 
 FROM ghcr.io/vectorize-io/hindsight:${VERSION}
 

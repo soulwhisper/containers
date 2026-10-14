@@ -81,15 +81,23 @@ func Test(t *testing.T) {
 			"sh", "-c", "for s in caveman caveman-commit caveman-review caveman-help caveman-stats caveman-compress cavecrew; do test -f \"/skills/$s/SKILL.md\" || exit 1; done")
 	})
 
+	// ---- hermes plugin python deps -----------------------------------------
+
+	t.Run("Check plugin deps are bundled", func(t *testing.T) {
+		testhelpers.TestFileExists(t, ctx, image, "/pylib/lark_oapi/__init__.py", nil)
+		testhelpers.TestFileExists(t, ctx, image, "/pylib/requests_toolbelt/__init__.py", nil)
+	})
+
 	// ---- install.sh (initContainer entrypoint) -----------------------------
 
-	t.Run("Check install.sh mirrors binaries and skills", func(t *testing.T) {
+	t.Run("Check install.sh mirrors binaries, skills and plugin deps", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image,
 			&testhelpers.ContainerConfig{Env: map[string]string{
 				"BIN_DIR":    "/tmp/bin",
 				"SKILLS_DIR": "/tmp/skills",
+				"PYLIB_DIR":  "/tmp/pylib",
 			}},
-			"sh", "-c", "/app/install.sh && test -x /tmp/bin/rtk && test -x /tmp/bin/buzz && test -f /tmp/skills/caveman/SKILL.md")
+			"sh", "-c", "/app/install.sh && test -x /tmp/bin/rtk && test -x /tmp/bin/buzz && test -f /tmp/skills/caveman/SKILL.md && test -f /tmp/pylib/lark_oapi/__init__.py")
 	})
 
 	t.Run("Check install.sh is idempotent", func(t *testing.T) {
@@ -97,7 +105,8 @@ func Test(t *testing.T) {
 			&testhelpers.ContainerConfig{Env: map[string]string{
 				"BIN_DIR":    "/tmp/bin",
 				"SKILLS_DIR": "/tmp/skills",
+				"PYLIB_DIR":  "/tmp/pylib2",
 			}},
-			"sh", "-c", "/app/install.sh && /app/install.sh && test -f /tmp/skills/cavecrew/SKILL.md")
+			"sh", "-c", "/app/install.sh && /app/install.sh && test -f /tmp/skills/cavecrew/SKILL.md && test -f /tmp/pylib2/requests_toolbelt/__init__.py")
 	})
 }

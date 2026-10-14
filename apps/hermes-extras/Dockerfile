@@ -9,6 +9,18 @@ RUN set -eux; \
     cargo build --release --locked -p buzz-cli; \
     strip target/release/buzz
 
+# hermes-agent plugin deps (feishu platform: lark-oapi). --no-deps: everything
+# else in the closure (requests, httpx, websockets, pycryptodome, qrcode,
+# pypng) already exists in the upstream image venv — shipping copies here
+# would shadow them via PYTHONPATH. install.sh mirrors /pylib onto the PVC.
+FROM docker.io/library/python:3.14-alpine3.23@sha256:e7cff362a12454395f8dc99607c21a602ea880cdce03538877b90c2ba932b16f AS pydeps
+ARG LARK_OAPI_VERSION
+ARG REQUESTS_TOOLBELT_VERSION
+RUN pip install --no-cache-dir --target=/pylib --no-deps \
+      "lark-oapi==${LARK_OAPI_VERSION}" \
+      "requests-toolbelt==${REQUESTS_TOOLBELT_VERSION}" \
+    && chown -R 10000:10000 /pylib
+
 # https://github.com/NousResearch/hermes-agent/blob/main/Dockerfile
 FROM debian:13-slim@sha256:3a39a0592364683e6bab97937b72cad5a8fa6dcbbee90edb3bb48c7f8e94f258
 
@@ -54,6 +66,9 @@ RUN set -eux; \
     cp -r "/tmp/caveman-${CAVEMAN_VERSION#v}/skills/." /skills/; \
     rm -rf /tmp/caveman*; \
     chown -R 10000:10000 /skills
+
+# hermes plugin deps (see pydeps stage at top)
+COPY --from=pydeps /pylib /pylib
 
 USER 10000:10000
 WORKDIR /data

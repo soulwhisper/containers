@@ -55,7 +55,13 @@ docker exec hermes-suite supervisorctl -c /app/supervisord.conf status
 - The base image is the upstream `stable` Docker channel, pinned by digest
   in the Dockerfile (`nousresearch/hermes-agent:stable@sha256:…`). Docker
   Hub publishes no plain `vX.Y.Z` tag — only immutable `rc.N-vX.Y.Z`
-  candidates and the floating `stable`/`latest` aliases.
+  candidates and the floating `stable`/`latest` aliases. (Tracking the
+  `rc.N-` tags was rejected: they are pre-release candidates — e.g.
+  `rc.3-v0.22.0` ships before v0.22.0 final — while `stable@digest` lands
+  exactly the released image.)
+- A renovate `packageRule` blocks the legacy `v2026.x` CalVer releases:
+  they remain published upstream and sort newer than 0.x under semver, so
+  without the guard renovate would propose them as "upgrades".
 - Bundled **webui** version is recorded only in OCI labels:
   - `hermes-suite.agent-version`
   - `hermes-suite.webui-version`

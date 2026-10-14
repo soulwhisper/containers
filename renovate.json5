@@ -127,6 +127,16 @@
       platformAutomerge: true,
     },
     {
+      description: 'Block hermes-agent legacy CalVer releases: upstream NousResearch/hermes-agent switched to semver at v0.21.6, but the old v2026.x GitHub releases remain published and sort newer than 0.x under semver — without this guard renovate proposes them as upgrades (a disguised downgrade)',
+      matchDatasources: [
+        'github-releases',
+      ],
+      matchDepNames: [
+        'NousResearch/hermes-agent',
+      ],
+      allowedVersions: '!/^v?\\d{4}\\./',
+    },
+    {
       description: [
         'Open major updates directly, no dashboard approval',
       ],

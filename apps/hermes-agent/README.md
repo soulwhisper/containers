@@ -6,10 +6,15 @@ image, augmented at build time:
 - **supervisord** running `gateway` + `dashboard` in one container (upstream's
   own s6-overlay entrypoint needs root + a writable `/run`, incompatible with
   `runAsNonRoot` / dropped caps / read-only rootfs)
-- **rtk** (`/bundled/bin`, on `PATH`) — shell-output compression proxy for
-  agent commands (kubectl/git/docker/…)
-- **caveman** skill pack (`/bundled/skills`, mirrored onto the data volume by
-  the entrypoint)
+- **caveman** skill pack (`/bundled/skills`, exact-mirrored onto the data
+  volume by the entrypoint — hermes loads skills natively, enabled on load)
+- **rtk** — shell-output compression proxy for agent commands
+  (kubectl/git/docker/…). Fully initialized at build: binary at
+  `/bundled/bin` (on `PATH`, sha256-verified) and the hermes plugin adapter
+  at `/bundled/plugins/rtk-rewrite` (mirrored to `~/.hermes/plugins/` by the
+  entrypoint). The only runtime contract is the allow-list —
+  `plugins.enabled: [rtk-rewrite]` in the GitOps-managed `config.yaml` (a
+  runtime `rtk init` would be reverted by the next config seed anyway)
 - **feishu plugin deps** (`lark-oapi`, `qrcode`, …) installed into the project
   venv using upstream's own pins (`pyproject.toml` →
   `optional-dependencies.feishu`) — runtime lazy-install is impossible on a

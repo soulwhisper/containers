@@ -49,21 +49,29 @@ RUN set -eu; \
 # trigger a build on their own (only hermes-agent is version-tracked here;
 # a new base digest/version rebuild picks up whatever extras are current).
 RUN set -eux; \
-    mkdir -p /bundled/bin /bundled/skills; \
+    mkdir -p /bundled/bin /bundled/skills /bundled/plugins/rtk-rewrite; \
     cd /tmp; \
     # rtk — latest release binary, sha256-verified against the release's
-    # own checksums.txt
+    # own checksums.txt; the hermes plugin adapter ships in the git repo at
+    # the same tag (static files — the runtime init's config mutation is
+    # GitOps-managed, see configmap plugins.enabled)
+    rtk_tag="$(curl -fsSL -o /dev/null -w '%{url_effective}' https://github.com/rtk-ai/rtk/releases/latest)"; \
+    rtk_tag="${rtk_tag##*/}"; \
     case "$(uname -m)" in \
       x86_64)  rtk_asset="rtk-oss-x86_64-unknown-linux-musl" ;; \
       aarch64) rtk_asset="rtk-oss-aarch64-unknown-linux-gnu" ;; \
       *) echo "unsupported arch" >&2; exit 1 ;; \
     esac; \
-    curl -fsSL "https://github.com/rtk-ai/rtk/releases/latest/download/checksums.txt" -o checksums.txt; \
-    curl -fsSL "https://github.com/rtk-ai/rtk/releases/latest/download/${rtk_asset}.tar.gz" -o "${rtk_asset}.tar.gz"; \
+    curl -fsSL "https://github.com/rtk-ai/rtk/releases/download/${rtk_tag}/checksums.txt" -o checksums.txt; \
+    curl -fsSL "https://github.com/rtk-ai/rtk/releases/download/${rtk_tag}/${rtk_asset}.tar.gz" -o "${rtk_asset}.tar.gz"; \
     grep "  ${rtk_asset}.tar.gz\$" checksums.txt | sha256sum -c -; \
     tar -xzf "${rtk_asset}.tar.gz" -C /bundled/bin rtk; \
     chmod 755 /bundled/bin/rtk; \
-    echo "rtk=$(/bundled/bin/rtk --version 2>&1 | head -1)" >> /bundled/VERSIONS; \
+    for f in __init__.py plugin.yaml; do \
+      curl -fsSL "https://raw.githubusercontent.com/rtk-ai/rtk/${rtk_tag}/hooks/hermes/rtk-rewrite/${f}" \
+        -o "/bundled/plugins/rtk-rewrite/${f}"; \
+    done; \
+    echo "rtk=${rtk_tag}" >> /bundled/VERSIONS; \
     # caveman — latest release tag resolved via the releases/latest redirect
     cave_tag="$(curl -fsSL -o /dev/null -w '%{url_effective}' https://github.com/JuliusBrussee/caveman/releases/latest)"; \
     cave_tag="${cave_tag##*/}"; \

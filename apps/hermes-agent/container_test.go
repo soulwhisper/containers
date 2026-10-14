@@ -121,4 +121,16 @@ func Test(t *testing.T) {
 			"sh", "-c", "! /app/entrypoint.sh true",
 		)
 	})
+
+	t.Run("Entrypoint mirrors caveman skills and rtk plugin to HERMES_HOME", func(t *testing.T) {
+		// bogus service forces a non-zero exit AFTER the mirror steps, so one
+		// run verifies both the rejection path and the mirror side effects
+		testhelpers.TestCommandSucceeds(t, ctx, image,
+			&testhelpers.ContainerConfig{Env: map[string]string{
+				"HERMES_SERVICES": "bogus",
+				"HERMES_HOME":     "/tmp/hh",
+			}},
+			"sh", "-c", "! /app/entrypoint.sh true && test -f /tmp/hh/plugins/rtk-rewrite/__init__.py && test -f /tmp/hh/skills/productivity/caveman/SKILL.md",
+		)
+	})
 }

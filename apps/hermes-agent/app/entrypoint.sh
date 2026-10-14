@@ -86,6 +86,17 @@ for f in gateway.pid gateway.lock; do
     fi
 done
 
+# Baked hermes plugins (rtk-rewrite): exact mirror per plugin dir; the
+# plugins.enabled allow-list lives in the GitOps-seeded config.yaml
+if [ -d "${BUNDLED}/plugins" ]; then
+    mkdir -p "${HERMES_HOME}/plugins"
+    for d in "${BUNDLED}"/plugins/*/; do
+        name="$(basename "$d")"
+        rm -rf "${HERMES_HOME}/plugins/$name"
+        cp -r "$d" "${HERMES_HOME}/plugins/$name"
+    done
+fi
+
 # ---- Service selection -----------------------------------------------------
 
 SERVICES="${HERMES_SERVICES:-gateway,dashboard}"

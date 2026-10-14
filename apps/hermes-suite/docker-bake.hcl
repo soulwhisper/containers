@@ -3,10 +3,14 @@ APP = "hermes-suite"
 SOURCE = "https://github.com/NousResearch/hermes-agent"
 variable "GIT_SHA" {}
 
-# Upstream hermes-agent base image (date-based tag).
+# Upstream hermes-agent release version. Since v0.21.6 upstream publishes
+# semver GitHub releases instead of CalVer tags; Docker Hub carries only
+# immutable rc.N-vX.Y.Z candidates plus the floating stable/latest aliases
+# (no plain vX.Y.Z tag), so the version is tracked from GitHub releases here
+# and the base image is digest-pinned separately in the Dockerfile.
 variable "AGENT_VERSION" {
-  // renovate: datasource=docker depName=nousresearch/hermes-agent
-  default = "v2026.9.24"
+  // renovate: datasource=github-releases depName=NousResearch/hermes-agent
+  default = "v0.21.7"
 }
 
 # Upstream hermes-webui release tag (semver).
@@ -30,7 +34,6 @@ variable "AGENT_VERSION_TRIM" {
 target "image" {
   inherits = ["docker-metadata-action"]
   args = {
-    AGENT_VERSION = "${AGENT_VERSION}"
     WEBUI_VERSION = "${WEBUI_VERSION}"
   }
   labels = {

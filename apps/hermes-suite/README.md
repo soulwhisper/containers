@@ -49,12 +49,18 @@ docker exec hermes-suite supervisorctl -c /app/supervisord.conf status
 
 ### Versioning
 
-- Image tag follows the upstream **agent** CalVer (e.g. `2026.5.7`).
+- Image tag follows the upstream **agent** semver release (e.g. `0.21.7`).
+  Upstream switched from CalVer to semver at v0.21.6; the tag is tracked
+  from GitHub releases (`NousResearch/hermes-agent`).
+- The base image is the upstream `stable` Docker channel, pinned by digest
+  in the Dockerfile (`nousresearch/hermes-agent:stable@sha256:…`). Docker
+  Hub publishes no plain `vX.Y.Z` tag — only immutable `rc.N-vX.Y.Z`
+  candidates and the floating `stable`/`latest` aliases.
 - Bundled **webui** version is recorded only in OCI labels:
   - `hermes-suite.agent-version`
   - `hermes-suite.webui-version`
 - A webui-only bump rewrites `docker-bake.hcl`, which triggers the release
-  workflow and republishes the same agent-CalVer tag with new webui content
+  workflow and republishes the same agent-semver tag with new webui content
   (new digest, updated label). Consumers who need exact pinning should pin
   by digest.
 
@@ -65,7 +71,7 @@ docker exec hermes-suite supervisorctl -c /app/supervisord.conf status
 ```yaml
 services:
   hermes-suite:
-    image: ghcr.io/soulwhisper/hermes-suite:2026.5.7
+    image: ghcr.io/soulwhisper/hermes-suite:0.21.7
     container_name: hermes-suite
     restart: unless-stopped
     ports:
@@ -96,7 +102,7 @@ spec:
         fsGroup: 10000
       containers:
         - name: hermes-suite
-          image: ghcr.io/soulwhisper/hermes-suite:2026.5.7
+          image: ghcr.io/soulwhisper/hermes-suite:0.21.7
           env:
             - name: HERMES_SERVICES
               value: gateway,webui,dashboard

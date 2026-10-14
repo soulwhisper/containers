@@ -56,14 +56,14 @@
       pinDigests: false,
     },
     {
-      description: 'Floating tags (main/latest) still track digests; recreateClosed keeps automerge on for repeat digest PRs (identical branch+title triggers automergedPreviously otherwise)',
+      description: 'Floating tags (main/latest/stable) still track digests; recreateClosed keeps automerge on for repeat digest PRs (identical branch+title triggers automergedPreviously otherwise). stable = nousresearch/hermes-agent stable channel (hermes-suite base)',
       matchDatasources: [
         'docker',
       ],
       matchUpdateTypes: [
         'digest',
       ],
-      matchCurrentValue: '/^(main|latest)$/',
+      matchCurrentValue: '/^(main|latest|stable)$/',
       enabled: true,
       recreateWhen: 'always',
     },

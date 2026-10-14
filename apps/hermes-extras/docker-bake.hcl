@@ -16,6 +16,20 @@ variable "BUZZ_VERSION" {
   default = "v0.5.2"
 }
 
+# Feishu platform deps for the hermes-agent runtime (lark-oapi + its one dep
+# missing from the upstream venv, requests-toolbelt). Mirrored onto the data
+# PVC by install.sh and loaded via PYTHONPATH — runtime lazy-install is
+# impossible: read-only rootfs, and plugin deps belong in GitOps content.
+variable "LARK_OAPI_VERSION" {
+  // renovate: datasource=pypi depName=lark-oapi
+  default = "1.6.8"
+}
+
+variable "REQUESTS_TOOLBELT_VERSION" {
+  // renovate: datasource=pypi depName=requests-toolbelt
+  default = "1.0.0"
+}
+
 group "default" {
   targets = ["image-local"]
 }
@@ -23,8 +37,10 @@ group "default" {
 target "image" {
   inherits = ["docker-metadata-action"]
   args = {
-    CAVEMAN_VERSION = "${CAVEMAN_VERSION}"
-    BUZZ_VERSION    = "${BUZZ_VERSION}"
+    CAVEMAN_VERSION           = "${CAVEMAN_VERSION}"
+    BUZZ_VERSION              = "${BUZZ_VERSION}"
+    LARK_OAPI_VERSION         = "${LARK_OAPI_VERSION}"
+    REQUESTS_TOOLBELT_VERSION = "${REQUESTS_TOOLBELT_VERSION}"
   }
   # read from the bake-action step env (MISE_GITHUB_TOKEN)
   secret = ["id=github_token,env=MISE_GITHUB_TOKEN"]

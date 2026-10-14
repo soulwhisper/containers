@@ -56,16 +56,35 @@
       pinDigests: false,
     },
     {
-      description: 'Floating tags (main/latest) still track digests; recreateClosed keeps automerge on for repeat digest PRs (identical branch+title triggers automergedPreviously otherwise)',
+      description: 'Floating tags (main/latest/stable) still track digests; recreateClosed keeps automerge on for repeat digest PRs (identical branch+title triggers automergedPreviously otherwise). stable = nousresearch/hermes-agent stable channel (hermes-agent app base)',
       matchDatasources: [
         'docker',
       ],
       matchUpdateTypes: [
         'digest',
       ],
-      matchCurrentValue: '/^(main|latest)$/',
+      matchCurrentValue: '/^(main|latest|stable)$/',
       enabled: true,
       recreateWhen: 'always',
+    },
+    {
+      description: 'Block hermes-agent legacy CalVer releases: upstream NousResearch/hermes-agent switched to semver at v0.21.6, but the old v2026.x GitHub releases remain published and sort newer than 0.x under semver — without this guard renovate proposes them as upgrades (a disguised downgrade)',
+      matchDatasources: [
+        'github-releases',
+      ],
+      matchDepNames: [
+        'NousResearch/hermes-agent',
+      ],
+      allowedVersions: '!/^v?\\d{4}\\./',
+    },
+    {
+      description: 'hermes-agent tag bump + base digest bump ship together: retagging without the digest move would briefly publish the new tag on the old base. minimumGroupSize=2 holds a lone update until the other appears (upstream moves the stable alias ~1h after cutting the GitHub release); if one side never comes, the update waits — visible on the dependency dashboard',
+      matchPackageNames: [
+        'NousResearch/hermes-agent',
+        'nousresearch/hermes-agent',
+      ],
+      groupName: 'hermes-agent',
+      minimumGroupSize: 2,
     },
     {
       description: [

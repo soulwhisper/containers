@@ -1,5 +1,0 @@
-[settings]
-experimental = true
-
-[tools]
-"github:rtk-ai/rtk" = "1.0.0"

@@ -11,102 +11,37 @@ func Test(t *testing.T) {
 	ctx := context.Background()
 	image := testhelpers.GetTestImage("ghcr.io/soulwhisper/hermes-extras:latest")
 
-	// ---- Layout ------------------------------------------------------------
-
-	t.Run("Check /data directory exists", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "test", "-d", "/data")
-	})
-
-	t.Run("Check /data is not empty", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", "[ -n \"$(ls -A /data 2>/dev/null)\" ]")
-	})
-
-	t.Run("Check WORKDIR is /data", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", `[ "$(pwd)" = "/data" ]`)
-	})
-
-	// ---- Build-time tooling still present (debugability) ------------------
-
-	t.Run("Check mise on PATH", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "which", "mise")
-	})
-
-	// ---- Non-root default --------------------------------------------------
-
-	t.Run("Default user is uid 10000", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", `[ "$(id -u)" = "10000" ]`)
-	})
-
-	t.Run("Default user is not root", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", `[ "$(id -u)" != "0" ]`)
-	})
-
-	// ---- Bundled plugins ---------------------------------------------------
-
-	t.Run("Check rtk binary exists", func(t *testing.T) {
-		testhelpers.TestFileExists(t, ctx, image, "/data/rtk", nil)
-	})
-
-	t.Run("Check rtk binary is executable", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "test", "-x", "/data/rtk")
-	})
-
-	t.Run("Check rtk binary runs", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", "/data/rtk --version || /data/rtk version || /data/rtk -v")
-	})
-
-	t.Run("Check buzz binary exists", func(t *testing.T) {
-		testhelpers.TestFileExists(t, ctx, image, "/data/buzz", nil)
-	})
-
-	t.Run("Check buzz binary is executable", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "test", "-x", "/data/buzz")
-	})
-
-	t.Run("Check buzz binary runs", func(t *testing.T) {
-		// buzz-cli has no clap `version` attribute — `--version` is an unknown
-		// flag (exit 1). `--help` is the supported zero-side-effect success path.
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "/data/buzz", "--help")
-	})
-
-	// ---- caveman skills ----------------------------------------------------
-
-	t.Run("Check all caveman skill dirs are bundled", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", "for s in caveman caveman-commit caveman-review caveman-help caveman-stats caveman-compress cavecrew; do test -f \"/skills/$s/SKILL.md\" || exit 1; done")
-	})
-
-	// ---- hermes plugin python deps -----------------------------------------
+	// ---- Plugin python deps (the only payload) ------------------------------
 
 	t.Run("Check plugin deps are bundled", func(t *testing.T) {
 		testhelpers.TestFileExists(t, ctx, image, "/pylib/lark_oapi/__init__.py", nil)
 		testhelpers.TestFileExists(t, ctx, image, "/pylib/requests_toolbelt/__init__.py", nil)
 	})
 
-	// ---- install.sh (initContainer entrypoint) -----------------------------
+	// ---- Non-root default ---------------------------------------------------
 
-	t.Run("Check install.sh mirrors binaries, skills and plugin deps", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image,
-			&testhelpers.ContainerConfig{Env: map[string]string{
-				"BIN_DIR":    "/tmp/bin",
-				"SKILLS_DIR": "/tmp/skills",
-				"PYLIB_DIR":  "/tmp/pylib",
-			}},
-			"sh", "-c", "/app/install.sh && test -x /tmp/bin/rtk && test -x /tmp/bin/buzz && test -f /tmp/skills/caveman/SKILL.md && test -f /tmp/pylib/lark_oapi/__init__.py")
+	t.Run("Default user is uid 10000", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
+			"sh", "-c", `[ "$(id -u)" = "10000" ]`)
 	})
 
-	t.Run("Check install.sh is idempotent", func(t *testing.T) {
+	// ---- install.sh (initContainer entrypoint) ------------------------------
+
+	t.Run("Check install.sh mirrors plugin deps", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image,
 			&testhelpers.ContainerConfig{Env: map[string]string{
-				"BIN_DIR":    "/tmp/bin",
-				"SKILLS_DIR": "/tmp/skills",
-				"PYLIB_DIR":  "/tmp/pylib2",
+				"PYLIB_DIR": "/tmp/pylib",
 			}},
-			"sh", "-c", "/app/install.sh && /app/install.sh && test -f /tmp/skills/cavecrew/SKILL.md && test -f /tmp/pylib2/requests_toolbelt/__init__.py")
+			"sh", "-c", "/app/install.sh && test -f /tmp/pylib/lark_oapi/__init__.py && test -f /tmp/pylib/requests_toolbelt/__init__.py")
+	})
+
+	t.Run("Check install.sh is idempotent and evicts stale pins", func(t *testing.T) {
+		// a foreign leftover from a previous pin must be removed by the mirror,
+		// or two lark_oapi copies would fight on the same PYTHONPATH entry
+		testhelpers.TestCommandSucceeds(t, ctx, image,
+			&testhelpers.ContainerConfig{Env: map[string]string{
+				"PYLIB_DIR": "/tmp/pylib2",
+			}},
+			"sh", "-c", "mkdir -p /tmp/pylib2/lark_oapi-9.9.9.dist-info && /app/install.sh && test ! -e /tmp/pylib2/lark_oapi-9.9.9.dist-info && /app/install.sh && test -f /tmp/pylib2/lark_oapi/__init__.py")
 	})
 }

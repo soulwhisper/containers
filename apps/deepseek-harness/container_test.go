@@ -75,4 +75,17 @@ func Test(t *testing.T) {
 			"sh", "-c", "timeout 10 /app/entrypoint.sh web 2>&1 | grep -q \"relay:\"",
 		)
 	})
+
+	t.Run("Entrypoint passes DSH_TRUSTED_HOSTS/DSH_PUBLIC_URL through", func(t *testing.T) {
+		// with --public-url the startup line prints the advertised root;
+		// that only happens if the app actually received both flags
+		testhelpers.TestCommandSucceeds(t, ctx, image,
+			&testhelpers.ContainerConfig{Env: map[string]string{
+				"DSH_HOME":          "/tmp/dshh2",
+				"DSH_TRUSTED_HOSTS": "tavern.example,192.168.1.10:9400",
+				"DSH_PUBLIC_URL":    "https://tavern.example",
+			}},
+			"sh", "-c", "timeout 12 /app/entrypoint.sh web 2>&1 | grep -q \"https://tavern.example/\"",
+		)
+	})
 }

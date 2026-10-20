@@ -41,7 +41,7 @@ func Test(t *testing.T) {
 
 	t.Run("Check profile plugin dirs baked", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", "cd /opt/dsh-seed/profiles/tavern/node_modules && test -d dsh-tavern-wrongbook && test -d dsh-tavern-comfy && test -d dsh-tavern-knock-knock && test -d narrative-anchor && test -d dsh-ui-auth")
+			"sh", "-c", "cd /opt/dsh-seed/profiles/tavern/node_modules && test -d dsh-tavern-wrongbook && test -d dsh-tavern-comfy && test -d dsh-tavern-knock-knock && test -d narrative-anchor")
 	})
 
 	t.Run("Check font-limit host patch applied", func(t *testing.T) {

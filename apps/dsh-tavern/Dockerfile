@@ -11,7 +11,7 @@
 #      pnpm-workspace.yaml (modeled on the installer's output, not the
 #      source's), patches/ trimmed to the used set, cordis.patch.yml
 #   4. pnpm install in the profile
-#   5. dsh plugin add: eco plugins + dsh-ui-auth
+#   5. dsh plugin add: eco plugins
 #   6. host UX patches (font limit, chat answer step) applied to THIS image's
 #      dsh tree only
 #   7. freeze: pnpm binaries removed — runtime plugin changes are impossible
@@ -28,9 +28,6 @@ ARG DSH_TAVERN_IMAGE_REF=v2.9.0
 ARG DSH_KNOCK_KNOCK_REF=v0.7.1
 # no release tags on the current line — pinned commit; bump manually
 ARG DSH_NARRATIVE_ANCHOR_SHA=2ee3da047e5fd6056aef361744655be99b4f7713
-# ui-auth is likewise a coupled pin here: bumps ride along on tavern ref
-# re-evals / image rebuilds (security-relevant CVEs: bump manually, one line)
-ARG DSH_UI_AUTH_VERSION=0.7.1
 
 FROM deepseek-harness
 
@@ -39,7 +36,6 @@ ARG DSH_WRONGBOOK_REF
 ARG DSH_TAVERN_IMAGE_REF
 ARG DSH_KNOCK_KNOCK_REF
 ARG DSH_NARRATIVE_ANCHOR_SHA
-ARG DSH_UI_AUTH_VERSION
 # filled in from the base image build; used in the profile manifest
 ARG DSH_VERSION=0.2.1-rc.2
 
@@ -79,8 +75,7 @@ RUN export DSH_HOME=/opt/dsh-seed HOME=/tmp; \
     dsh plugin --profile tavern add "github:weixinlll/dsh-tavern-image#${DSH_TAVERN_IMAGE_REF}"; \
     dsh plugin --profile tavern add "github:dearacknowl/dsh-tavern-knock-knock#${DSH_KNOCK_KNOCK_REF}"; \
     dsh plugin --profile tavern add "github:ActivityTime/narrative-anchor#${DSH_NARRATIVE_ANCHOR_SHA}"; \
-    dsh plugin --profile tavern add "dsh-ui-auth@${DSH_UI_AUTH_VERSION}"; \
-    for p in dsh-tavern-wrongbook dsh-tavern-comfy dsh-tavern-knock-knock narrative-anchor dsh-ui-auth; do \
+    for p in dsh-tavern-wrongbook dsh-tavern-comfy dsh-tavern-knock-knock narrative-anchor; do \
       test -d "${PROF}/node_modules/$p"; \
     done
 
@@ -110,7 +105,6 @@ RUN export DSH_HOME=/opt/dsh-seed; \
       echo "dsh-tavern-image=${DSH_TAVERN_IMAGE_REF}"; \
       echo "dsh-tavern-knock-knock=${DSH_KNOCK_KNOCK_REF}"; \
       echo "narrative-anchor=${DSH_NARRATIVE_ANCHOR_SHA}"; \
-      echo "dsh-ui-auth=${DSH_UI_AUTH_VERSION}"; \
     } > "${DSH_HOME}/BUNDLED_VERSIONS"; \
     chmod -R a+rX /opt/dsh-seed /opt/dsh-tavern; \
     chown -R node:node /opt/dsh-seed; \
@@ -130,11 +124,11 @@ USER node
 ARG IMAGE_VERSION=0.2.1-rc.2-r1
 ARG IMAGE_REVISION=unknown
 LABEL org.opencontainers.image.title="dsh-tavern" \
-      org.opencontainers.image.description="DeepSeek Harness RP chat appliance: dsh-tavern profile + ecosystem plugins + dsh-ui-auth, frozen (no runtime plugin changes)" \
+      org.opencontainers.image.description="DeepSeek Harness RP chat appliance: dsh-tavern profile + ecosystem plugins, frozen (no runtime plugin changes); auth via the authentik portal" \
       org.opencontainers.image.vendor="soulwhisper" \
       org.opencontainers.image.source="https://github.com/soulwhisper/containers" \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.version="${IMAGE_VERSION}" \
       org.opencontainers.image.revision="${IMAGE_REVISION}" \
       io.github.soulwhisper.dsh-tavern.ref="${DSH_TAVERN_REF}" \
-      io.github.soulwhisper.dsh-tavern.plugins="wrongbook@${DSH_WRONGBOOK_REF},tavern-image@${DSH_TAVERN_IMAGE_REF},knock-knock@${DSH_KNOCK_KNOCK_REF},narrative-anchor@${DSH_NARRATIVE_ANCHOR_SHA},dsh-ui-auth@${DSH_UI_AUTH_VERSION}"
+      io.github.soulwhisper.dsh-tavern.plugins="wrongbook@${DSH_WRONGBOOK_REF},tavern-image@${DSH_TAVERN_IMAGE_REF},knock-knock@${DSH_KNOCK_KNOCK_REF},narrative-anchor@${DSH_NARRATIVE_ANCHOR_SHA}"

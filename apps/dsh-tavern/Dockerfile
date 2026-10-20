@@ -11,8 +11,7 @@
 #      pnpm-workspace.yaml (modeled on the installer's output, not the
 #      source's), patches/ trimmed to the used set, cordis.patch.yml
 #   4. pnpm install in the profile
-#   5. dsh plugin add: eco plugins (auth is the authentik forward-auth
-#      portal at the gateway — no in-app auth plugin)
+#   5. dsh plugin add: eco plugins
 #   6. host UX patches (font limit, chat answer step) applied to THIS image's
 #      dsh tree only
 #   7. freeze: pnpm binaries removed — runtime plugin changes are impossible

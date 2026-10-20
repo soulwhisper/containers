@@ -8,9 +8,11 @@
 # ../deepseek-harness first (see docker-bake.hcl), or pass
 # --build-context deepseek-harness=docker-image://ghcr.io/soulwhisper/deepseek-harness:latest
 
-# renovate: datasource=npm depName=dsh-ui-auth
+# Plugin pins are deliberately NOT renovate-tracked (coupled pins): the
+# workbench has full runtime install/update ability, so plugin updates are
+# user-driven inside the appliance — the image is not rebuilt for plugin
+# sub-versions. Only upstreams are tracked: dsh core (via the base image).
 ARG DSH_UI_AUTH_VERSION=0.7.1
-# renovate: datasource=npm depName=dshmarket
 ARG DSH_MARKET_VERSION=1.66.44
 
 FROM deepseek-harness

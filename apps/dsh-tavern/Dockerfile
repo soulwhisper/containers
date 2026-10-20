@@ -28,7 +28,8 @@ ARG DSH_TAVERN_IMAGE_REF=v2.9.0
 ARG DSH_KNOCK_KNOCK_REF=v0.7.1
 # no release tags on the current line — pinned commit; bump manually
 ARG DSH_NARRATIVE_ANCHOR_SHA=2ee3da047e5fd6056aef361744655be99b4f7713
-# renovate: datasource=npm depName=dsh-ui-auth
+# ui-auth is likewise a coupled pin here: bumps ride along on tavern ref
+# re-evals / image rebuilds (security-relevant CVEs: bump manually, one line)
 ARG DSH_UI_AUTH_VERSION=0.7.1
 
 FROM deepseek-harness

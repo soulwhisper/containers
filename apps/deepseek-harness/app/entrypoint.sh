@@ -59,7 +59,23 @@ stop() {
 trap stop INT TERM HUP
 
 echo "entrypoint: starting dsh with profile '$PROFILE' (relay listens on ${DSH_PORT:-3080})" >&2
-dsh --profile "$PROFILE" --no-open &
+
+# remote-access flags (see dsh docs/user-guide/public-deployments):
+# without --trusted-host, pages load but every /api call and WS upgrade from
+# the domain gets 403. DSH_TRUSTED_HOSTS is comma-separated (repeatable flag);
+# DSH_PUBLIC_URL advertises the external root so the printed token URL is
+# usable as-is.
+EXTRA_ARGS=""
+if [ -n "${DSH_TRUSTED_HOSTS:-}" ]; then
+  for h in $(printf '%s' "$DSH_TRUSTED_HOSTS" | tr ',' ' '); do
+    EXTRA_ARGS="$EXTRA_ARGS --trusted-host $h"
+  done
+fi
+[ -n "${DSH_PUBLIC_URL:-}" ] && EXTRA_ARGS="$EXTRA_ARGS --public-url $DSH_PUBLIC_URL"
+
+# intentional word splitting of EXTRA_ARGS (flags are built word-wise above)
+# shellcheck disable=SC2086
+dsh --profile "$PROFILE" --no-open $EXTRA_ARGS &
 dsh_pid=$!
 
 # forward the first exiting child; if dsh dies, stop the relay too

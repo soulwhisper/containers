@@ -24,6 +24,22 @@ rewritten in-repo — no third-party image dependency):
   config are never overwritten. Base ships no seed → no-op.
 - non-root (`node`), tini, `DSH_TELEMETRY_DISABLED=1`, no browser/X11 stack
 
+## Remote access
+
+dsh's fence (docs/user-guide/public-deployments): pages and static assets
+load for any authority, but **every /api call and WebSocket upgrade from
+another authority is 403** unless named. Set:
+
+- `DSH_TRUSTED_HOSTS` — comma-separated authorities (host or host:port;
+  the entrypoint emits a repeatable `--trusted-host` per entry)
+- `DSH_PUBLIC_URL` — advertised external root; the printed startup-token
+  URL then points at the public address directly
+
+The startup token itself **cannot be disabled** (it is the core browser-auth
+mechanism — no off switch upstream), but the signed cookie persists 30 days
+and survives restarts (secret in `$DSH_HOME/.credentials.yaml`, on the
+volume), so only new devices need a fresh token URL from the logs.
+
 ## Usage
 
 Standalone stock dsh web: `docker run -p 3080:3080 ghcr.io/soulwhisper/deepseek-harness`

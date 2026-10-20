@@ -1,0 +1,43 @@
+{
+  "name": "dsh-profile-tavern",
+  "private": true,
+  "dependencies": {
+    "dsh-better-sidebar": "0.28.0",
+    "dsh-dream-skin": "link:@SRC@/tavern-plugin/packages/dsh-dream-skin",
+    "dsh-tavern-plugin": "link:@SRC@/tavern-plugin",
+    "dsh-tavern-remote": "link:@SRC@/tavern-plugin/packages/dsh-tavern-remote"
+  },
+  "dsh": {
+    "profile": {
+      "bundles": [
+        "@deepseek-ai/dsh-base",
+        "@deepseek-ai/dsh-web-app",
+        "dsh-better-sidebar",
+        "dsh-dream-skin",
+        "dsh-tavern-plugin",
+        "dsh-tavern-remote"
+      ]
+    }
+  },
+  "dshTavern": {
+    "source": "@SRC@",
+    "dataRoot": "/home/node/.dsh/profile-data/tavern/data",
+    "host": "cli",
+    "dshVersion": "@DSH_VERSION@",
+    "managedBundles": [
+      "@deepseek-ai/dsh-base",
+      "@deepseek-ai/dsh-web-app",
+      "dsh-better-sidebar",
+      "dsh-dream-skin",
+      "dsh-tavern-plugin",
+      "dsh-tavern-remote"
+    ],
+    "managedDependencies": [
+      "dsh-better-sidebar",
+      "dsh-dream-skin",
+      "dsh-tavern-plugin",
+      "dsh-tavern-remote"
+    ],
+    "profileConfigurationVersion": 1
+  }
+}

@@ -36,8 +36,9 @@ func Test(t *testing.T) {
 			"sh", "-c", "test \"$(dsh --version)\" = \"0.2.1-rc.2\"")
 	})
 
-	t.Run("Check pnpm on PATH", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "pnpm", "--version")
+	t.Run("Check pnpm version", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
+			"sh", "-c", "test \"$(pnpm --version)\" = \"11.25.0\"")
 	})
 
 	t.Run("Check tini exists", func(t *testing.T) {
@@ -49,28 +50,12 @@ func Test(t *testing.T) {
 			"sh", "-c", "test \"$(id -un)\" = node")
 	})
 
-	// ---- Baked plugin seed --------------------------------------------------
+	// ---- Basement contract --------------------------------------------------
 
-	t.Run("Check bundled versions stamp", func(t *testing.T) {
-		testhelpers.TestFileExists(t, ctx, image, "/opt/dsh-seed/BUNDLED_VERSIONS", nil)
-	})
-
-	t.Run("Check web profile plugins baked", func(t *testing.T) {
+	t.Run("Check no plugin seed shipped in base", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", "test -d /opt/dsh-seed/profiles/web/node_modules/dsh-ui-auth && test -d /opt/dsh-seed/profiles/web/node_modules/dsh-pocket-relay && test -d /opt/dsh-seed/profiles/web/node_modules/dshmarket")
+			"sh", "-c", "test ! -e /opt/dsh-seed")
 	})
-
-	t.Run("Check tavern profile plugins baked", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", "test -d /opt/dsh-seed/profiles/tavern/node_modules/dsh-ui-auth && test -d /opt/dsh-seed/profiles/tavern/node_modules/dsh-pocket")
-	})
-
-	t.Run("Check tavern runtime present in seed", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil,
-			"sh", "-c", "ls /opt/dsh-seed/profiles/tavern/node_modules | grep -qi tavern")
-	})
-
-	// ---- Entrypoint profile handling ---------------------------------------
 
 	t.Run("Entrypoint rejects unknown profile without seeding", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image,
@@ -82,12 +67,12 @@ func Test(t *testing.T) {
 		)
 	})
 
-	t.Run("Entrypoint seeds fresh DSH_HOME on first boot", func(t *testing.T) {
-		// dsh web may still be starting when timeout kills it (124); the seed
-		// side effects are what we assert, not web readiness
+	t.Run("Entrypoint runs stock dsh web without a seed", func(t *testing.T) {
+		// the relay log line proves the entrypoint reached the run stage;
+		// dsh itself may still be starting when timeout kills it
 		testhelpers.TestCommandSucceeds(t, ctx, image,
 			&testhelpers.ContainerConfig{Env: map[string]string{"DSH_HOME": "/tmp/dshh"}},
-			"sh", "-c", "timeout 15 /app/entrypoint.sh web || true; test -f /tmp/dshh/.bundled-version && test -d /tmp/dshh/profiles/web/node_modules/dsh-ui-auth && test -d /tmp/dshh/profiles/tavern/node_modules/dsh-pocket",
+			"sh", "-c", "timeout 10 /app/entrypoint.sh web 2>&1 | grep -q \"relay:\"",
 		)
 	})
 }

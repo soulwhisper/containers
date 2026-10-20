@@ -114,6 +114,14 @@ RUN export DSH_HOME=/opt/dsh-seed; \
     } > "${DSH_HOME}/BUNDLED_VERSIONS"; \
     chmod -R a+rX /opt/dsh-seed /opt/dsh-tavern; \
     chown -R node:node /opt/dsh-seed; \
+    # pnpm writes link: deps as RELATIVE symlinks anchored at the seed root
+    # (/opt/dsh-seed) — they dangle wherever the entrypoint copies the
+    # profile ($DSH_HOME, tests, upgrades). Rewrite the three link: deps as
+    # ABSOLUTE symlinks so they survive any copy location.
+    for d in dsh-tavern-plugin dsh-dream-skin dsh-tavern-remote; do \
+      ln -sfn "$(realpath -m "${DSH_HOME}/profiles/tavern/node_modules/$d")" \
+        "${DSH_HOME}/profiles/tavern/node_modules/$d"; \
+    done; \
     # freeze: no runtime plugin installs/updates (stability contract)
     rm -f /usr/local/bin/pnpm /usr/local/bin/pnpx
 

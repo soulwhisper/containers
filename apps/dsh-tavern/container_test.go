@@ -60,10 +60,13 @@ func Test(t *testing.T) {
 
 	t.Run("Boot: tavern profile imports cleanly and activates plugins", func(t *testing.T) {
 		// full boot (~25s): entrypoint seeds, relay binds, dsh imports the
-		// tavern plugin (the #300 failure point) and wrongbook activates
+		// tavern plugin (the #300 failure point) and wrongbook activates.
+		// "skipping profile bundle" must NOT appear: pnpm's relative link:
+		// symlinks dangle wherever the profile is copied — the Dockerfile
+		// rewrites them as absolute symlinks (step 7)
 		testhelpers.TestCommandSucceeds(t, ctx, image,
 			&testhelpers.ContainerConfig{Env: map[string]string{"DSH_HOME": "/tmp/dshh"}},
-			"sh", "-c", "timeout 45 /app/entrypoint.sh tavern > /tmp/boot.log 2>&1 || true; test \"$(grep -c 'failed to import' /tmp/boot.log)\" = 0 && grep -q 'relay:' /tmp/boot.log && grep -q 'dsh-wrongbook' /tmp/boot.log && test -f /tmp/dshh/.bundled-version",
+			"sh", "-c", "timeout 45 /app/entrypoint.sh tavern > /tmp/boot.log 2>&1 || true; test \"$(grep -c 'failed to import' /tmp/boot.log)\" = 0 && ! grep -q 'skipping profile bundle' /tmp/boot.log && grep -q 'relay:' /tmp/boot.log && grep -q 'dsh-wrongbook' /tmp/boot.log && test -f /tmp/dshh/.bundled-version",
 		)
 	})
 

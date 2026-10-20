@@ -89,7 +89,7 @@ ENV DSH_HOME=/home/node/.dsh \
     XDG_CONFIG_HOME=/tmp/.config \
     XDG_DATA_HOME=/tmp/.local/share
 
-RUN mkdir -p "${DSH_HOME}" && chown -R node:node "${DSH_HOME}"
+RUN mkdir -p "${DSH_HOME}" /workspace && chown -R node:node "${DSH_HOME}" /workspace
 
 USER node
 WORKDIR /workspace

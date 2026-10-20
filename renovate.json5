@@ -158,7 +158,7 @@
       ],
       automerge: false,
       labels: [
-        'human-review',
+        'review/required',
       ],
     },
   ],

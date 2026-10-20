@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.28@sha256:bb22d9815c728170f72750f4e5b0d672e06176142e1d602c7e66c050100b7e5b
+# syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 
 # dsh-tavern — RP chat appliance (cluster): base deepseek-harness + the
 # flizzywine/dsh-tavern profile installed via the VERIFIED CUSTOM RECIPE

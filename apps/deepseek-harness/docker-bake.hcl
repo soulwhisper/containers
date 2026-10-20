@@ -4,10 +4,11 @@ SOURCE = "https://github.com/deepseek-ai/deepseek-harness"
 variable "GIT_SHA" {}
 
 # Upstream DeepSeek Harness version (npm @deepseek-ai/dsh). Plugin versions
-# and the tavern ref are pinned as Dockerfile ARGs with renovate comments;
-# a renovate group ships related bumps in one PR where possible.
-# renovate: datasource=npm depName=@deepseek-ai/dsh
+# and the tavern ref are pinned as Dockerfile ARGs; the tag here must move in
+# the same renovate PR as the Dockerfile ARG (same depName+datasource → one
+# grouped PR), else tag drifts from content.
 variable "DSH_VERSION" {
+  // renovate: datasource=npm depName=@deepseek-ai/dsh
   default = "0.2.1-rc.2"
 }
 

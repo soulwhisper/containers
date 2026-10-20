@@ -3,6 +3,18 @@ APP = "dsh-tavern"
 SOURCE = "https://github.com/flizzywine/dsh-tavern"
 variable "GIT_SHA" {}
 
+# Image tags track the upstream dsh-tavern plugin version (the appliance's
+# upstream). Same depName+datasource as the Dockerfile ARG DSH_TAVERN_REF →
+# renovate ships tag and content in one PR. OCI tag strips the v prefix.
+variable "DSH_TAVERN_VERSION" {
+  // renovate: datasource=github-tags depName=flizzywine/dsh-tavern
+  default = "v3.0"
+}
+
+variable "DSH_TAVERN_VERSION_TRIM" {
+  default = trimprefix(DSH_TAVERN_VERSION, "v")
+}
+
 group "default" {
   targets = ["image-local"]
 }
@@ -33,7 +45,7 @@ target "image" {
 target "image-local" {
   inherits = ["image"]
   output = ["type=docker"]
-  tags = ["${APP}:local"]
+  tags = ["${APP}:${DSH_TAVERN_VERSION_TRIM}"]
 }
 
 target "image-all" {
@@ -43,6 +55,7 @@ target "image-all" {
   ]
   tags = [
     "ghcr.io/soulwhisper/${APP}:sha-${GIT_SHA}",
+    "ghcr.io/soulwhisper/${APP}:${DSH_TAVERN_VERSION_TRIM}",
     "ghcr.io/soulwhisper/${APP}:latest",
   ]
 }

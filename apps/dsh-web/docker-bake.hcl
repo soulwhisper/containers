@@ -3,6 +3,14 @@ APP = "dsh-web"
 SOURCE = "https://github.com/deepseek-ai/deepseek-harness"
 variable "GIT_SHA" {}
 
+# Image tags track the upstream dsh version (the workbench's upstream).
+# Same depName+datasource as the base Dockerfile ARG and base bake var →
+# renovate ships all of them in one grouped PR.
+variable "DSH_VERSION" {
+  // renovate: datasource=npm depName=@deepseek-ai/dsh
+  default = "0.2.1-rc.2"
+}
+
 group "default" {
   targets = ["image-local"]
 }
@@ -33,7 +41,7 @@ target "image" {
 target "image-local" {
   inherits = ["image"]
   output = ["type=docker"]
-  tags = ["${APP}:local"]
+  tags = ["${APP}:${DSH_VERSION}"]
 }
 
 target "image-all" {
@@ -43,6 +51,7 @@ target "image-all" {
   ]
   tags = [
     "ghcr.io/soulwhisper/${APP}:sha-${GIT_SHA}",
+    "ghcr.io/soulwhisper/${APP}:${DSH_VERSION}",
     "ghcr.io/soulwhisper/${APP}:latest",
   ]
 }

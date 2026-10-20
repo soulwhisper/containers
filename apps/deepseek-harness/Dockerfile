@@ -8,10 +8,12 @@
 # $DSH_HOME on first boot.
 
 ARG NODE_IMAGE=docker.io/library/node:24-trixie
+# coupled build pin, deliberately NOT renovate-tracked: version moves only
+# when node upgrades or a child drifts (tavern repo lockfile format), at
+# which point this base is revisited as a whole
+ARG PNPM_VERSION=11.25.0
 # renovate: datasource=npm depName=@deepseek-ai/dsh
 ARG DSH_VERSION=0.2.1-rc.2
-# renovate: datasource=npm depName=pnpm
-ARG PNPM_VERSION=11.25.0
 
 FROM ${NODE_IMAGE} AS installer
 

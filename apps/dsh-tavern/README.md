@@ -14,7 +14,8 @@ image rebuilds).
 | `dsh-tavern-image` | `v2.9.0` | scene illustration; backend (ComfyUI/online keys) configured in UI, stored on the volume |
 | `dsh-tavern-knock-knock` | `v0.7.1` | long-campaign reminders; installs as plain dependency (upstream warning expected, not an error) |
 | `narrative-anchor` | `#2ee3da04` | no release tags on the current line — pinned commit, bump manually. First boot logs a benign ENOENT for a desktop-layout audit path (expected) |
-| `dsh-ui-auth` | `0.7.1` | login gateway; required (native startup token rotates per process start). Sessions persist on the volume. Behind a reverse proxy set `DSH_AUTH_TRUST_PROXY=1` |
+| auth | — | **none in-app** — auth is the authentik forward-auth portal at the gateway (united auth). Fallback: the dsh startup-token URL in pod logs; the token rotates per process start, so a pod restart re-locks the UI until the new token URL is used once |
+
 | host UX patches | from the tavern source | `theme-font-limit` (text max 22→32) + `chat-answer-step` (edited rounds stay expanded) applied to this image's dsh tree only; idempotent and skip-safe on dsh bumps (build prints their result) |
 
 ## Freeze contract

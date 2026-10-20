@@ -151,5 +151,15 @@
       platformAutomerge: true,
       ignoreTests: false,
     },
+    {
+      description: 'dsh-tavern updates need human review: the appliance is stability-pinned (core bumps can shift profile/patch semantics; eco-plugin pins are coupled to the tavern ref and deliberately untracked) — label and block automerge for anything touching the app',
+      matchFileNames: [
+        'apps/dsh-tavern/**',
+      ],
+      automerge: false,
+      labels: [
+        'human-review',
+      ],
+    },
   ],
 }

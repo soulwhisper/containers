@@ -20,11 +20,11 @@
 
 # renovate: datasource=github-tags depName=flizzywine/dsh-tavern
 ARG DSH_TAVERN_REF=v3.0
-# renovate: datasource=github-tags depName=XGUIMAX/dsh-tavern-wrongbook
+# Eco-plugin pins are deliberately NOT renovate-tracked (coupled pins): they
+# are re-evaluated only when DSH_TAVERN_REF drifts upstream — rebuilding the
+# appliance for an eco-plugin's own release cycle is unwanted.
 ARG DSH_WRONGBOOK_REF=v1.33.0
-# renovate: datasource=github-tags depName=weixinlll/dsh-tavern-image
 ARG DSH_TAVERN_IMAGE_REF=v2.9.0
-# renovate: datasource=github-tags depName=dearacknowl/dsh-tavern-knock-knock
 ARG DSH_KNOCK_KNOCK_REF=v0.7.1
 # no release tags on the current line — pinned commit; bump manually
 ARG DSH_NARRATIVE_ANCHOR_SHA=2ee3da047e5fd6056aef361744655be99b4f7713

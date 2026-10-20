@@ -7,7 +7,7 @@
 # shared: children bake /opt/dsh-seed and this same entrypoint seeds it into
 # $DSH_HOME on first boot.
 
-ARG NODE_IMAGE=docker.io/library/node:24-trixie
+ARG NODE_IMAGE=docker.io/library/node:24-trixie@sha256:ff054b356ab93ed540518ca23cfcd9840e5256dd04db5a8d8afc43f4ecc7c9f8
 # coupled build pin, deliberately NOT renovate-tracked: version moves only
 # when node upgrades or a child drifts (tavern repo lockfile format), at
 # which point this base is revisited as a whole

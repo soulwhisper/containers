@@ -12,7 +12,7 @@
 # digest forward on each upstream release while the image tag is tracked from
 # GitHub releases in docker-bake.hcl; both updates ship in one grouped PR
 # (minimumGroupSize=2).
-FROM nousresearch/hermes-agent:stable@sha256:36099926da316742423544e055d4734777105ffe6341873af5459b957d0c2919
+FROM nousresearch/hermes-agent:stable@sha256:2f305c9bdc81731f48664586d23cb6a6f838a15ad7be1bfabe0c3c269d8e09b9
 
 USER root
 

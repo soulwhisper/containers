@@ -25,24 +25,14 @@ jobs:
     outputs:
       changed-files: ${{ steps.changed-files.outputs.changed_files }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
       - name: Get changed files (push)
         uses: bjw-s-labs/action-changed-files@v0.7.0
-        id: changed-files-action
+        id: changed-files
         if: ${{ github.event_name == 'push' }}
         with:
           path: apps
           include_only_directories: true
           max_depth: 1
-
-      - name: Set changed files output
-        id: changed-files
-        env:
-          CHANGED_APPS: ${{ steps.changed-files-action.outputs.changed_files }}
-          DISPATCH_APP: ${{ github.event_name == 'workflow_dispatch' && inputs.app || '' }}
-        run: node .github/scripts/select-apps.cjs
 
   build:
     if: ${{ needs.prepare.outputs.changed-files != '[]' }}

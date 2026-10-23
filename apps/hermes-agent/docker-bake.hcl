@@ -11,7 +11,7 @@ variable "GIT_SHA" {}
 # renovate group (minimumGroupSize=2) ships version + digest in one PR.
 variable "AGENT_VERSION" {
   // renovate: datasource=github-releases depName=NousResearch/hermes-agent
-  default = "v0.22.4"
+  default = "v0.22.5"
 }
 
 group "default" {

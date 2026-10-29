@@ -1,5 +1,5 @@
 ---
-apiVersion: mirror.plugin.fluxcd.io/v1beta1
+apiVersion: mirror.plugin.fluxcd.io/v1beta2
 kind: Config
 charts:
   - name: ceph-csi-drivers

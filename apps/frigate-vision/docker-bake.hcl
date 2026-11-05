@@ -5,7 +5,7 @@ variable "GIT_SHA" {}
 
 variable "PAHO_MQTT_VERSION" {
   // renovate: datasource=pypi depName=paho-mqtt
-  default = "2.1.0"
+  default = "2.2.0"
 }
 
 variable "HTTPX_VERSION" {

@@ -6,6 +6,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/moby/moby/api/types/container"
 	"github.com/stretchr/testify/require"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
@@ -22,7 +23,9 @@ func GetTestImage(defaultImage string) string {
 
 // ContainerConfig holds optional container configuration
 type ContainerConfig struct {
-	Env map[string]string // Environment variables to set in the container
+	Env            map[string]string // Environment variables to set in the container
+	ReadOnlyRootfs bool              // Mount the container root filesystem read-only
+	Tmpfs          map[string]string // Tmpfs mount paths and options
 }
 
 // applyContainerConfig applies optional container configuration
@@ -33,9 +36,16 @@ func applyContainerConfig(config *ContainerConfig) []testcontainers.ContainerCus
 		return opts
 	}
 
-	// Apply environment variables
 	if len(config.Env) > 0 {
 		opts = append(opts, testcontainers.WithEnv(config.Env))
+	}
+	if config.ReadOnlyRootfs {
+		opts = append(opts, testcontainers.WithHostConfigModifier(func(hostConfig *container.HostConfig) {
+			hostConfig.ReadonlyRootfs = true
+		}))
+	}
+	if len(config.Tmpfs) > 0 {
+		opts = append(opts, testcontainers.WithTmpfs(config.Tmpfs))
 	}
 
 	return opts

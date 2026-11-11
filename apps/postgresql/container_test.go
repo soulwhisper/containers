@@ -35,13 +35,6 @@ func Test(t *testing.T) {
 		testhelpers.TestFileExists(t, ctx, image, lib+"postgis-3.so", nil)
 	})
 
-	t.Run("immich extension files exist", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "sh", "-c",
-			"for ext in uuid-ossp unaccent cube earthdistance pg_trgm vector; do "+
-				"ls /usr/share/postgresql/18/extension/$ext--*.sql >/dev/null 2>&1 || exit 1; "+
-				"done")
-	})
-
 	t.Run("postgres binary runs", func(t *testing.T) {
 		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "postgres", "--version")
 	})

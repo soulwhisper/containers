@@ -12,7 +12,10 @@ baseline extensions plus this cluster's search extensions, installed via the
 | `vector` (pgvector)  | hindsight, open-webui (vector search)          |
 | `pgaudit`            | cnpg baseline                                  |
 | `pg_failover_slots`  | cnpg baseline                                  |
-The baseline set mirrors the official `cloudnative-pg/postgresql` bundle
+`uuid-ossp`, `unaccent`, `cube`, `earthdistance`, and `pg_trgm` are shipped by
+the `postgresql-18` package itself. They are intentionally not in the pig list;
+re-installing them can drift the base package. Immich's `CREATE EXTENSION` calls
+still resolve against those base files.
 
 `CREATE EXTENSION` and CNPG `Database` reconciliation only register extension
 files that are already present in the image; they do not install a missing

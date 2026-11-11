@@ -17,7 +17,7 @@ RUN <<EOF
   # default) so its NO_PUBKEY warning during 'repo add' is cosmetic
   cp /usr/local/share/keyrings/postgres.gpg.asc /etc/apt/trusted.gpg.d/postgresql.asc
   pig repo add pgsql -u
-  pig ext install -y pgroonga uuid-ossp pgaudit pg_failover_slots vector postgis -v ${PG_MAJOR}
+  pig ext install -y pgroonga pgaudit pg_failover_slots vector -v ${PG_MAJOR}
 EOF
 
 # cnpg runs instance containers as uid 26

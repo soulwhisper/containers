@@ -31,8 +31,9 @@ func Test(t *testing.T) {
 		testhelpers.TestFileExists(t, ctx, image, lib+"pg_failover_slots.so", nil)
 	})
 
-	t.Run("postgis library exists", func(t *testing.T) {
-		testhelpers.TestFileExists(t, ctx, image, lib+"postgis-3.so", nil)
+	t.Run("uuid-ossp extension files exist (base postgres)", func(t *testing.T) {
+		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "sh", "-c",
+			"ls /usr/share/postgresql/18/extension/uuid-ossp--*.sql >/dev/null")
 	})
 
 	t.Run("postgres binary runs", func(t *testing.T) {

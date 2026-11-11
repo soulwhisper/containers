@@ -9,9 +9,7 @@ baseline extensions plus this cluster's search extensions, installed via the
 | Extension            | Used by                                        |
 | -------------------- | ---------------------------------------------- |
 | `pgroonga`           | hindsight (keyword search)                     |
-| `vector` (pgvector)  | hindsight, open-webui; immich pgvector restore |
-| `earthdistance`      | immich pgvector restore (stock contrib)        |
-| `cube`               | `earthdistance` dependency (stock contrib)     |
+| `vector` (pgvector)  | hindsight, open-webui (vector search)          |
 | `pgaudit`            | cnpg baseline                                  |
 | `pg_failover_slots`  | cnpg baseline                                  |
 The baseline set mirrors the official `cloudnative-pg/postgresql` bundle

@@ -16,25 +16,10 @@ func Test(t *testing.T) {
 	t.Run("cnpg compatibility: postgres user is uid 26", func(t *testing.T) {
 		testhelpers.TestUserUID(t, ctx, image, "postgres", 26)
 	})
-	ext := "/usr/share/postgresql/18/extension/"
-
-	t.Run("vchord library exists", func(t *testing.T) {
-		testhelpers.TestFileExists(t, ctx, image, lib+"vchord.so", nil)
-	})
-
-	t.Run("vchord_bm25 library exists", func(t *testing.T) {
-		testhelpers.TestFileExists(t, ctx, image, lib+"vchord_bm25.so", nil)
-	})
-
-	t.Run("pg_tokenizer library exists", func(t *testing.T) {
-		testhelpers.TestFileExists(t, ctx, image, lib+"pg_tokenizer.so", nil)
-	})
-
-
 	t.Run("pgroonga library exists", func(t *testing.T) {
 		testhelpers.TestFileExists(t, ctx, image, lib+"pgroonga.so", nil)
 	})
-	t.Run("pgvector library exists (required by vchord)", func(t *testing.T) {
+	t.Run("pgvector library exists", func(t *testing.T) {
 		testhelpers.TestFileExists(t, ctx, image, lib+"vector.so", nil)
 	})
 
@@ -48,10 +33,6 @@ func Test(t *testing.T) {
 
 	t.Run("postgis library exists", func(t *testing.T) {
 		testhelpers.TestFileExists(t, ctx, image, lib+"postgis-3.so", nil)
-	})
-
-	t.Run("vchord extension sql exists", func(t *testing.T) {
-		testhelpers.TestCommandSucceeds(t, ctx, image, nil, "sh", "-c", "ls "+ext+"vchord--*.sql >/dev/null")
 	})
 
 	t.Run("postgres binary runs", func(t *testing.T) {

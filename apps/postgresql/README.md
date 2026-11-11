@@ -8,20 +8,16 @@ baseline extensions plus this cluster's search extensions, installed via the
 
 | Extension            | Used by                                        |
 | -------------------- | ---------------------------------------------- |
-| `vchord`             | immich, hindsight (vector search)              |
 | `pgroonga`           | hindsight (keyword search)                     |
-| `vchord_bm25`        | optional BM25 hybrid search                    |
-| `vector` (pgvector)  | **required by vchord** (package + SQL dependency) |
+| `vector` (pgvector)  | hindsight, open-webui (vector search)          |
 | `pgaudit`            | cnpg baseline                                  |
 | `pg_failover_slots`  | cnpg baseline                                  |
 The baseline set mirrors the official `cloudnative-pg/postgresql` bundle
 
 ## Why not upstream images
 
-- `ghcr.io/tensorchord/cloudnative-vectorchord:18` ships only `vchord.so` —
-  no `vchord_bm25` (cnpg initdb died on the preload) and no `pgroonga`.
-- `ghcr.io/tensorchord/cloudnative-vectorchord-bm25` is not publicly pullable
-  (ghcr 403).
+- The official CloudNativePG image includes the baseline and pgvector, but not
+  `pgroonga`.
 
 ## Versioning
 
@@ -44,5 +40,5 @@ The cnpg Cluster spec owns `shared_preload_libraries`; the standalone CMD
 (also kept from upstream) uses:
 
 ```
-vchord,vchord_bm25,vector,pg_tokenizer,pgroonga
+vector,pgroonga
 ```

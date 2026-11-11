@@ -1,18 +1,28 @@
 # postgresql
 
 PostgreSQL (official `postgres` image) with the CloudNativePG operator's
-baseline extensions plus this cluster's search extensions, installed via the
+baseline extensions, PostgreSQL contrib, and this cluster's search extensions.
+The non-contrib extensions are installed via the
 [pig](https://pig.pgsty.com) package manager from the pigsty extension catalog.
 
 ## Extensions
 
-| Extension            | Used by                                        |
-| -------------------- | ---------------------------------------------- |
-| `pgroonga`           | hindsight (keyword search)                     |
-| `vector` (pgvector)  | hindsight, open-webui (vector search)          |
-| `pgaudit`            | cnpg baseline                                  |
-| `pg_failover_slots`  | cnpg baseline                                  |
-The baseline set mirrors the official `cloudnative-pg/postgresql` bundle
+| Extension            | Source             | Used by                                      |
+| -------------------- | ------------------ | -------------------------------------------- |
+| `pgroonga`           | pig                | hindsight (keyword search)                   |
+| `vector` (pgvector)  | pig                | hindsight, open-webui; immich pgvector restore |
+| `uuid-ossp`          | pig                | immich (UUID generation)                     |
+| `unaccent`           | postgres contrib   | immich (search)                              |
+| `cube`               | postgres contrib   | immich (`earthdistance` dependency)          |
+| `earthdistance`      | postgres contrib   | immich (geo search)                          |
+| `pg_trgm`            | postgres contrib   | immich (trigram search)                      |
+| `pgaudit`            | pig                | cnpg baseline                                |
+| `pg_failover_slots`  | pig                | cnpg baseline                                |
+| `postgis`            | pig                | available; no active consumer                |
+
+`CREATE EXTENSION` and CNPG `Database` reconciliation only register extension
+files that are already present in the image; they do not install a missing
+package. `CASCADE` resolves extension dependencies, not OS packages.
 
 ## Why not upstream images
 

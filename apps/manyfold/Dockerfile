@@ -6,8 +6,8 @@ USER root
 RUN apk add --no-cache supervisor
 
 COPY entrypoint.sh /usr/local/bin/manyfold-entrypoint.sh
-COPY start.sh /usr/local/bin/manyfold-start.sh
-COPY supervisord.conf /etc/supervisord.conf
+COPY app/start.sh /usr/local/bin/manyfold-start.sh
+COPY app/supervisord.conf /etc/supervisord.conf
 RUN chmod 0555 /usr/local/bin/manyfold-entrypoint.sh /usr/local/bin/manyfold-start.sh
 
 ENV PUID=2000 \

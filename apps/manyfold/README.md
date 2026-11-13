@@ -1,11 +1,13 @@
 ## manyfold — non-root solo image
 
-Built from the pinned [`manyfold3d/manyfold`](https://github.com/manyfold3d/manyfold)
-solo image, including its bundled Redis. A custom entrypoint and `supervisord`
-run Redis and Manyfold directly; the upstream s6-overlay entrypoint is unused.
+Built from [`manyfold3d/manyfold`](https://github.com/manyfold3d/manyfold)
+at the version selected in `docker-bake.hcl`, including its bundled Redis. A
+custom entrypoint and `supervisord` run Redis and Manyfold directly; the
+upstream s6-overlay entrypoint is unused.
 
-The image defaults to UID/GID 2000 and supports a read-only root filesystem.
-No root entrypoint or runtime capabilities are required.
+The image supports caller-selected non-root UID/GID execution and a read-only
+root filesystem. Runtime identity and environment belong to the deployment;
+no root entrypoint or runtime capabilities are required.
 
 ### Required writable mounts
 

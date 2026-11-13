@@ -9,6 +9,14 @@ The image supports caller-selected non-root UID/GID execution and a read-only
 root filesystem. Runtime identity and environment belong to the deployment;
 no root entrypoint or runtime capabilities are required.
 
+### Required runtime identity
+
+Set `PUID` and `PGID` explicitly to the numeric UID/GID used to run the
+container, such as the pod's `runAsUser` and `runAsGroup`. Startup uses these
+values for SQLite database and plugin-directory ownership. The inherited
+upstream default is `0` for both; omitting them from a non-root deployment can
+fail or assign root ownership to application files.
+
 ### Required writable mounts
 
 - `/config` — SQLite database, settings, and plugins

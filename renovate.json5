@@ -131,6 +131,21 @@
       allowedVersions: '/3\\.14-alpine3\\.23/',
     },
     {
+      description: 'Skip PostgreSQL 19 until CloudNativePG and PGroonga support it',
+      matchDatasources: [
+        'docker',
+      ],
+      matchFileNames: [
+        'apps/postgresql/Dockerfile',
+        'apps/postgresql/docker-bake.hcl',
+      ],
+      matchPackageNames: [
+        'postgres',
+        'library/postgres',
+      ],
+      allowedVersions: '!/^19(?:[.-]|beta|rc|$)/',
+    },
+    {
       description: [
         'Open major updates directly, no dashboard approval',
       ],

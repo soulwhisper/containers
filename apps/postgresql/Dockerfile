@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 
-ARG BASE=18.7-bookworm@sha256:ece55f7868da684e400f82f1030a050718adbdd65c23aa500c486f6e2950dc0f
+ARG PG_VERSION
 
-FROM postgres:${BASE}
+FROM postgres:${PG_VERSION}-bookworm
 ARG PG_MAJOR
 
 # install pig (latest pigsty CLI) -> all extensions via pig (latest compatible)

@@ -5,7 +5,7 @@ variable "GIT_SHA" {}
 
 variable "PG_VERSION" {
   // renovate: datasource=docker depName=postgres versioning=semver
-  default = "18.6"
+  default = "18.7"
 }
 
 variable "PG_MAJOR" {
@@ -19,6 +19,7 @@ group "default" {
 target "image" {
   inherits = ["docker-metadata-action"]
   args = {
+    PG_VERSION = "${PG_VERSION}"
     PG_MAJOR = "${PG_MAJOR}"
   }
   labels = {

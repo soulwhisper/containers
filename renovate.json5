@@ -136,7 +136,6 @@
         'docker',
       ],
       matchFileNames: [
-        'apps/postgresql/Dockerfile',
         'apps/postgresql/docker-bake.hcl',
       ],
       matchPackageNames: [

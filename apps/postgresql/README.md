@@ -31,10 +31,11 @@ package. `CASCADE` resolves extension dependencies, not OS packages.
 - Extension versions are **not** pinned: every rebuild installs the latest
   pig CLI and the latest PG-major-compatible extension builds — the same
   float model upstream images use.
-- Builds are **triggered by upstream postgres updates** only: the `BASE`
-  digest is renovate-tracked, so a new upstream postgres release produces a
-  rebuild.
-- The image is released with the **postgres major tag** (e.g. `:18`).
+- Renovate updates `PG_VERSION` in `docker-bake.hcl`. Bake uses it for the
+  official `postgres:<version>-bookworm` base and the published tags, so they
+  advance together when the update lands on `main`.
+- Releases publish both the exact PostgreSQL version (e.g. `:18.7`) and the
+  major alias (e.g. `:18`).
 
 `mise` is intentionally not used to install pig: `github:pgsty/pig` is not in
 the mise registry and the github backend hits unauthenticated API rate limits

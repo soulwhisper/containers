@@ -131,18 +131,18 @@
       allowedVersions: '/3\\.14-alpine3\\.23/',
     },
     {
-      description: 'Skip PostgreSQL 19 until CloudNativePG and PGroonga support it',
+      description: 'Track two-part PostgreSQL Docker tags and skip PostgreSQL 19 until CloudNativePG and PGroonga support it',
       matchDatasources: [
         'docker',
       ],
       matchFileNames: [
-        'apps/postgresql/Dockerfile',
         'apps/postgresql/docker-bake.hcl',
       ],
       matchPackageNames: [
         'postgres',
         'library/postgres',
       ],
+      versioning: 'docker',
       allowedVersions: '!/^19(?:[.-]|beta|rc|$)/',
     },
     {

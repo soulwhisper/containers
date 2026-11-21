@@ -9,7 +9,7 @@ import (
 
 func Test(t *testing.T) {
 	ctx := context.Background()
-	image := testhelpers.GetTestImage("ghcr.io/soulwhisper/postgresql:18.6")
+	image := testhelpers.GetTestImage("ghcr.io/soulwhisper/postgresql:18")
 
 	lib := "/usr/lib/postgresql/18/lib/"
 

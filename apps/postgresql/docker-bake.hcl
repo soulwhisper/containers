@@ -4,7 +4,7 @@ SOURCE = "https://github.com/soulwhisper/containers"
 variable "GIT_SHA" {}
 
 variable "PG_VERSION" {
-  // renovate: datasource=docker depName=postgres versioning=semver
+  // renovate: datasource=docker depName=postgres
   default = "18.7"
 }
 

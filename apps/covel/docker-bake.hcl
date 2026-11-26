@@ -5,7 +5,7 @@ variable "GIT_SHA" {}
 
 variable "VERSION" {
   // renovate: datasource=github-releases depName=ackness/covel
-  default = "v0.0.54"
+  default = "v0.0.55"
 }
 
 group "default" {

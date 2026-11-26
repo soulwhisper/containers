@@ -10,7 +10,7 @@ variable "PAHO_MQTT_VERSION" {
 
 variable "HTTPX_VERSION" {
   // renovate: datasource=pypi depName=httpx
-  default = "0.28.1"
+  default = "0.29.0"
 }
 
 group "default" {
